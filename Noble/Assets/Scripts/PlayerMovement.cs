@@ -15,7 +15,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Vector2 spawnLocation; 
 
     private float horizontal; 
-    private float cameraYPos;
     bool canJump;
     bool canDash; 
    
@@ -25,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
         jumpForce = 275f;
         dashForce = 1500f; 
         playerSpeed = 3f; 
-        cameraYPos = 3f;
         isGrounded = true;
         isFlipped = false; 
         spawnLocation = player.transform.position;
@@ -35,11 +33,20 @@ public class PlayerMovement : MonoBehaviour
     {
 
         horizontal = Input.GetAxisRaw("Horizontal");
-        if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
+
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             canJump = true;  
         } 
-        if (Input.GetKeyUp(KeyCode.K)) 
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y / 2); 
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.K)) 
         {
             canDash = true; 
         }
