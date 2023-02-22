@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 8107537632188616367}
-  playerCamera: {fileID: 0}
+  Camera: {fileID: 0}
   rb: {fileID: 8107537632188616352}
   jumpForce: 0
   dashForce: 0

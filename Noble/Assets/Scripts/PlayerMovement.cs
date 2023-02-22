@@ -94,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Trap") && collider.gameObject.CompareTag("Enemy")) 
+        if (collider.gameObject.CompareTag("Trap") || collider.gameObject.CompareTag("Enemy")) 
         {
             rb.velocity = new Vector2(0, 0); 
             if (isFlipped) 
