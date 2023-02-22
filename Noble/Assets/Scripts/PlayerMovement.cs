@@ -58,13 +58,13 @@ public class PlayerMovement : MonoBehaviour
     {
 
         Debug.Log("Is this executing");
-        if (!isFlipped && isGrounded && horizontal == -1) 
+        if (!isFlipped && horizontal == -1) 
         {
             player.transform.Rotate(new Vector3(0, 180, 0));
             isFlipped = true; 
         }
         
-        if (isFlipped && isGrounded && horizontal == 1)
+        if (isFlipped && horizontal == 1)
         {
             player.transform.Rotate(new Vector3(0, -180, 0)); 
             isFlipped = false; 
