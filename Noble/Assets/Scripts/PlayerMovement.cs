@@ -40,15 +40,20 @@ public class PlayerMovement : MonoBehaviour
             canJump = true;  
         } 
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.X))
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y / 2); 
         }
 
 
-        if (Input.GetKeyDown(KeyCode.K)) 
+        if (Input.GetKeyDown(KeyCode.Z)) 
         {
             canDash = true; 
+        }
+
+        if (Input.GetKeyUp(KeyCode.Z)) 
+        {
+            canDash = false; 
         }
     }    
     
@@ -71,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Vector2 speed = new Vector2(horizontal * playerSpeed, rb.velocity.y);
-        rb.velocity = Vector2.MoveTowards(rb.velocity, speed, 100f);
+        rb.velocity = Vector2.MoveTowards(rb.velocity, speed, 1f);
         if (canJump) 
         {
             rb.AddForce(new Vector2(0, jumpForce)); 
@@ -81,9 +86,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (canDash)
         {
-            rb.AddForce(new Vector2(horizontal *dashForce, 0));
-            canDash = false; 
-        }
+            //Vector2 move = new Vector2(-1, 0) * speed / 2; 
+            rb.velocity = new Vector2(horizontal * playerSpeed * 2, rb.velocity.y); 
+            //canDash = false; 
+        } 
+
+    
+        
     }
     private void LateUpdate() 
     {
