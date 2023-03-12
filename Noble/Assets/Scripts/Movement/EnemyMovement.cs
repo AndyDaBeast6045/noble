@@ -42,7 +42,6 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-
     void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.CompareTag("Trap")) Destroy(this.gameObject); 

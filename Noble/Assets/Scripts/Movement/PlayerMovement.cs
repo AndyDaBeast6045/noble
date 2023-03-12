@@ -17,12 +17,16 @@ public class PlayerMovement : MonoBehaviour
     private float horizontal; 
     bool canJump;
     bool canDash; 
-   
+    int jumpCounter; 
+    float coyoteTime;
+    float coyoteTimeDelta; 
    
     private void Start()
     {
+        coyoteTime = 0.2f;
+        coyoteTimeDelta = coyoteTime; 
+        jumpCounter = 0; 
         jumpForce = 275f;
-        dashForce = 1500f; 
         playerSpeed = 3f; 
         isGrounded = true;
         isFlipped = false; 
@@ -34,35 +38,36 @@ public class PlayerMovement : MonoBehaviour
 
         horizontal = Input.GetAxisRaw("Horizontal");
 
+        if (isGrounded) 
+        {
+            coyoteTimeDelta = coyoteTime;
+        } 
+        else if (jumpCounter == 0)
+        {
+            coyoteTimeDelta -= Time.deltaTime; 
+        }
 
-        if (Input.GetKeyDown(KeyCode.X) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 3 && (coyoteTimeDelta > 0 || jumpCounter > 0))
         {
             canJump = true;  
         } 
-
+        
         if (Input.GetKeyUp(KeyCode.X))
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y / 2); 
+            jumpCounter++; 
         }
 
-
-        if (Input.GetKeyDown(KeyCode.Z)) 
+        if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0) 
         {
             canDash = true; 
         }
 
-        if (Input.GetKeyUp(KeyCode.Z)) 
-        {
-            canDash = false; 
-        }
+        if (Input.GetKeyUp(KeyCode.Z)) canDash  = false;
     }    
     
-        //rb.MovePosition(player.transform.position + horizontal * playerSpeed * Time.deltaTime);
-
     private void FixedUpdate()
     {
-
-        Debug.Log("Is this executing");
         if (!isFlipped && horizontal == -1) 
         {
             player.transform.Rotate(new Vector3(0, 180, 0));
@@ -79,23 +84,29 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = Vector2.MoveTowards(rb.velocity, speed, 1f);
         if (canJump) 
         {
-            rb.AddForce(new Vector2(0, jumpForce)); 
+            rb.gravityScale = 1;
+            rb.AddRelativeForce(new Vector2(0, jumpForce));
             canJump = false; 
-            isGrounded = false; 
+            coyoteTimeDelta = 0;  
         }
 
         if (canDash)
-        {
-            //Vector2 move = new Vector2(-1, 0) * speed / 2; 
-            rb.velocity = new Vector2(horizontal * playerSpeed * 2, rb.velocity.y); 
-            //canDash = false; 
+        { 
+            rb.AddForce(new Vector2(horizontal * 600, 0) ); 
+            canDash = false; 
         } 
-
-    
-        
     }
     private void LateUpdate() 
     {
+        if (coyoteTimeDelta > 0 && isGrounded) 
+        {
+            rb.gravityScale = 0;
+        } 
+        else 
+        {
+            rb.gravityScale = 1; 
+        }
+
         float offsetx = player.transform.position.x - Camera.transform.position.x;
         float offsety = (player.transform.position.y + 2f) - Camera.transform.position.y;
         
@@ -105,7 +116,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision) 
     {
-        if (collision.gameObject.CompareTag("Platform")) isGrounded = true; 
+        if (collision.gameObject.CompareTag("Platform")) 
+        { 
+            jumpCounter = 0; 
+            isGrounded = true; 
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform")) isGrounded = false; 
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
