@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
    
     private void Start()
     {
-        coyoteTime = 0.2f;
+        coyoteTime = 0.1f;
         coyoteTimeDelta = coyoteTime; 
         jumpCounter = 0; 
         jumpForce = 275f;
@@ -49,13 +49,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 2 && (coyoteTimeDelta > 0 || jumpCounter > 0))
         {
+            jumpCounter++; 
             canJump = true;  
         } 
         
         if (Input.GetKeyUp(KeyCode.X))
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y / 2); 
-            jumpCounter++; 
+            
         }
 
         if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0) 
@@ -85,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
         if (canJump) 
         {
             rb.gravityScale = 1;
-            rb.AddRelativeForce(new Vector2(0, jumpForce));
+            rb.AddForce(new Vector2(0, jumpForce));
             canJump = false; 
             coyoteTimeDelta = 0;  
         }
