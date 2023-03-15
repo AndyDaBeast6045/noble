@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
             coyoteTimeDelta -= Time.deltaTime; 
         }
 
-        if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 3 && (coyoteTimeDelta > 0 || jumpCounter > 0))
+        if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 2 && (coyoteTimeDelta > 0 || jumpCounter > 0))
         {
             canJump = true;  
         } 
@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (canDash)
         { 
-            rb.AddForce(new Vector2(horizontal * 600, 0) ); 
+            rb.AddForce(new Vector2(horizontal * 800, 0) ); 
             canDash = false; 
         } 
     }
