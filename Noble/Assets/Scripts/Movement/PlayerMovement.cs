@@ -4,144 +4,190 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] GameObject player; 
-    [SerializeField] Camera Camera; 
-    [SerializeField] Rigidbody2D rb; 
-    [SerializeField] float jumpForce;
-    [SerializeField] float dashForce;
-    [SerializeField] float playerSpeed;
-    [SerializeField] bool isGrounded;  
-    [SerializeField] bool isFlipped; 
-    [SerializeField] Vector2 spawnLocation; 
+    // Serialized Fields used by this script
+    [SerializeField]
+    GameObject player;
 
-    private float horizontal; 
-    bool canJump;
-    bool canDash; 
-    int jumpCounter; 
-    float coyoteTime;
-    float coyoteTimeDelta; 
-   
+    //[SerializeField]
+    // Camera Camera;
+
+    [SerializeField]
+    Rigidbody2D rb;
+
+    [SerializeField]
+    float jumpForce;
+
+    [SerializeField]
+    float dashForce;
+
+    [SerializeField]
+    float playerSpeed;
+
+    [SerializeField]
+    bool isGrounded;
+
+    [SerializeField]
+    bool isFlipped;
+
+    [SerializeField]
+    Vector2 spawnLocation;
+
+    private float horizontal;
+    private bool canJump;
+    private bool canDash;
+    private int jumpCounter;
+    private float coyoteTime;
+    private float coyoteTimeDelta;
+    private float dashTime;
+    private float dashTimeDelta;
+
+    // start method
     private void Start()
     {
-        coyoteTime = 0.1f;
-        coyoteTimeDelta = coyoteTime; 
-        jumpCounter = 0; 
+        dashTime = 2f;
+        dashTimeDelta = dashTime;
+        jumpCounter = 0;
         jumpForce = 275f;
-        playerSpeed = 3f; 
+        playerSpeed = 3f;
         isGrounded = true;
-        isFlipped = false; 
+        isFlipped = false;
         spawnLocation = player.transform.position;
-
     }
+
+    // update function
     private void Update()
     {
-
+        // get the direction that the player is facing
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (isGrounded) 
+        // sets the status if the player can jump or not
+        if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 2)
         {
-            coyoteTimeDelta = coyoteTime;
-        } 
-        else if (jumpCounter == 0)
-        {
-            coyoteTimeDelta -= Time.deltaTime; 
+            canJump = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 2 && (coyoteTimeDelta > 0 || jumpCounter > 0))
-        {
-            jumpCounter++; 
-            canJump = true;  
-        } 
-        
+        // half the y velocity of the player and set can jump to false
         if (Input.GetKeyUp(KeyCode.X))
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y / 2); 
-            
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y / 2);
+            canJump = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0) 
+        // start dashing
+        if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0)
         {
-            canDash = true; 
+            canDash = true;
         }
 
-        if (Input.GetKeyUp(KeyCode.Z)) canDash  = false;
-    }    
-    
+        // decrement dash time
+        if (canDash)
+            dashTimeDelta -= Time.deltaTime;
+
+        // reset dash after dash time is less than or equal to 0
+        if (dashTimeDelta <= 0 && isGrounded)
+        {
+            canDash = false;
+            dashTimeDelta = dashTime;
+        }
+
+        // Stop dashing, when not holding down the dash button
+        if ((!Input.GetKey(KeyCode.Z) && isGrounded))
+        {
+            canDash = false;
+        }
+    }
+
+    // fixed update, physics operations done here
     private void FixedUpdate()
     {
-        if (!isFlipped && horizontal == -1) 
+        // set the direction the player is facing
+        if (!isFlipped && horizontal == -1)
         {
             player.transform.Rotate(new Vector3(0, 180, 0));
-            isFlipped = true; 
-        }
-        
-        if (isFlipped && horizontal == 1)
-        {
-            player.transform.Rotate(new Vector3(0, -180, 0)); 
-            isFlipped = false; 
+            isFlipped = true;
         }
 
+        if (isFlipped && horizontal == 1)
+        {
+            player.transform.Rotate(new Vector3(0, -180, 0));
+            isFlipped = false;
+        }
+
+        // get the player speed;
         Vector2 speed = new Vector2(horizontal * playerSpeed, rb.velocity.y);
-        rb.velocity = Vector2.MoveTowards(rb.velocity, speed, 1f);
-        if (canJump) 
+        rb.velocity = speed;
+
+        // Do jump if the player can jump
+        if (canJump)
         {
             rb.gravityScale = 1;
             rb.AddForce(new Vector2(0, jumpForce));
-            canJump = false; 
-            coyoteTimeDelta = 0;  
+            coyoteTimeDelta = 0;
+            jumpCounter++;
+            canJump = false;
         }
 
+        // Do dash if the player is able to dash
         if (canDash)
-        { 
-            rb.AddForce(new Vector2(horizontal * 800, 0) ); 
-            canDash = false; 
-        } 
+        {
+            rb.velocity = (new Vector2(horizontal * playerSpeed * 2, rb.velocity.y));
+        }
     }
-    private void LateUpdate() 
+
+    // late Update
+    private void LateUpdate()
     {
-        if (coyoteTimeDelta > 0 && isGrounded) 
+        if (coyoteTimeDelta > 0 && isGrounded)
         {
             rb.gravityScale = 0;
-        } 
-        else 
+        }
+        else
         {
-            rb.gravityScale = 1; 
+            rb.gravityScale = 1;
         }
 
+        /*
         float offsetx = player.transform.position.x - Camera.transform.position.x;
         float offsety = (player.transform.position.y + 2f) - Camera.transform.position.y;
-        
-        if (Mathf.Abs(offsety) < 0.05f) offsety = 0;
-        Camera.transform.Translate(new Vector2(offsetx,0));
+
+        if (Mathf.Abs(offsety) < 0.05f)
+            offsety = 0;
+        Camera.transform.Translate(new Vector2(offsetx, offsety));
+        */
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) 
+    // check for collisions
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Platform")) 
-        { 
-            jumpCounter = 0; 
-            isGrounded = true; 
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            jumpCounter = 0;
+            isGrounded = true;
         }
     }
 
+    // check for the end of collisions
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Platform")) isGrounded = false; 
+        if (collision.gameObject.CompareTag("Platform"))
+            isGrounded = false;
     }
 
+    // check if entering certain triggers
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Trap") || collider.gameObject.CompareTag("Enemy")) 
+        if (collider.gameObject.CompareTag("Trap") || collider.gameObject.CompareTag("Enemy"))
         {
-            rb.velocity = new Vector2(0, 0); 
-            if (isFlipped) 
+            rb.velocity = new Vector2(0, 0);
+            if (isFlipped)
             {
-                player.transform.Rotate(new Vector3(0, -180, 0)); 
-                isFlipped = false; 
-            }   
-            player.transform.position = spawnLocation; 
-            
+                player.transform.Rotate(new Vector3(0, -180, 0));
+                isFlipped = false;
+            }
+            player.transform.position = spawnLocation;
         }
-    }
 
+        if (collider.gameObject.CompareTag("Platform"))
+            isGrounded = true;
+    }
 }
