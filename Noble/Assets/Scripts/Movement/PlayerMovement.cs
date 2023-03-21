@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     // start method
     private void Start()
     {
-        dashTime = 2f;
+        dashTime = 0.6f; // should last for approximately 60 frames
         dashTimeDelta = dashTime;
         jumpCounter = 0;
         jumpForce = 275f;
@@ -62,14 +62,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (player.transform.position.y <= 1f)
             isGrounded = true;
-        Debug.Log(enableInput);
-        Debug.Log("Is grounded? " + isGrounded);
+
         // Check and see if the player can take in input
-        if (!enableInput)
-        {
-            canDash = false;
-            canJump = false;
-        }
 
         if (isGrounded)
             enableInput = true;
@@ -182,7 +176,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall") && !isGrounded)
         {
-            Debug.Log("in the collider!!!!");
             enableInput = false;
             speed = new Vector2(0, rb.velocity.y);
         }
@@ -216,16 +209,6 @@ public class PlayerMovement : MonoBehaviour
                 isFlipped = false;
             }
             player.transform.position = spawnLocation;
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collider)
-    {
-        if (collider.gameObject.CompareTag("Wall") && !isGrounded && jumpCounter > 0)
-        {
-            Debug.Log("Touching the wall!!!");
-            enableInput = false;
-            speed = new Vector2(0, rb.velocity.y);
         }
     }
 

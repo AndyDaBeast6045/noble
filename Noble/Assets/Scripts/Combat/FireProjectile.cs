@@ -4,26 +4,52 @@ using UnityEngine;
 
 public class FireProjectile : MonoBehaviour
 {
+    [SerializeField]
+    GameObject player;
 
-    [SerializeField] GameObject player; 
-    [SerializeField] GameObject enemy; 
-    [SerializeField] GameObject projectile; 
- 
-    public Rigidbody2D rb; 
-    private Vector3 direction; 
-    private float timer = 5.0f; 
-   
+    [SerializeField]
+    GameObject enemy;
+
+    [SerializeField]
+    GameObject projectile;
+
+    [SerializeField]
+    Transform projectileFireTransform;
+
+    [SerializeField]
+    float timer;
+
+    [SerializeField]
+    float minDistanceToFire;
+
+    [SerializeField]
+    float timerDelta;
+
+    public Rigidbody2D rb;
+    private Vector3 direction;
+
+    void Start()
+    {
+        timer = 3.0f;
+        timerDelta = timer;
+        Debug.Log("Here is the timer delta" + timerDelta);
+    }
+
     void Update()
     {
-        timer -= Time.deltaTime; 
-        if (timer < 0)
+        timerDelta -= Time.deltaTime;
+        if (timerDelta < 0)
         {
-            timer = 5f;
-            if (Mathf.Abs(player.transform.position.x - this.transform.position.x)< 5.0f)
+            timerDelta = timer;
+
+            if (
+                Mathf.Abs(player.transform.position.x - this.transform.position.x)
+                < minDistanceToFire
+            )
             {
-                Instantiate(projectile, enemy.transform.position, Quaternion.identity);
-                rb = projectile.GetComponent<Rigidbody2D>(); 
+                Instantiate(projectile, projectileFireTransform.position, Quaternion.identity);
+                rb = projectile.GetComponent<Rigidbody2D>();
             }
         }
-    }    
+    }
 }

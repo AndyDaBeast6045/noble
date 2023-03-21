@@ -4,18 +4,24 @@ using UnityEngine;
 
 public class ProjectileBehavior : MonoBehaviour
 {
+    private float projectileVelocity;
 
-    private Rigidbody2D rb; 
-    private GameObject player; 
-    
+    private Rigidbody2D rb;
+    private GameObject player;
+
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>(); 
-        player = GameObject.FindGameObjectWithTag("Player"); 
-        Vector3 direction = player.transform.position - this.transform.position; 
-        rb.velocity = new Vector2(direction.x, direction.y).normalized * 5;
+        projectileVelocity = 8f;
+        rb = GetComponent<Rigidbody2D>();
+        player = GameObject.FindGameObjectWithTag("Player");
+        Vector3 direction = player.transform.position - this.transform.position;
+        rb.velocity = new Vector2(direction.x, direction.y).normalized * projectileVelocity;
     }
 
-    
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Enemy"))
+            Destroy(this.gameObject);
+    }
 }
