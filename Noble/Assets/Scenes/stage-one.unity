@@ -365,7 +365,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0035582185, y: 0.9913024}
+  m_Size: {x: 0.0035582185, y: 0.95}
   m_EdgeRadius: 0
 --- !u!1 &337684858
 GameObject:
@@ -1253,7 +1253,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0035582185, y: 0.9913024}
+  m_Size: {x: 0.0035582185, y: 0.95}
   m_EdgeRadius: 0
 --- !u!1 &1147432220
 GameObject:
@@ -1297,7 +1297,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.92378426, y: 0.076937914}
+  m_Size: {x: 0.95, y: 0.076937914}
   m_EdgeRadius: 0
 --- !u!212 &1147432222
 SpriteRenderer:
@@ -1772,7 +1772,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0035582185, y: 0.9913024}
+  m_Size: {x: 0.0035582185, y: 0.95}
   m_EdgeRadius: 0
 --- !u!50 &1725735971 stripped
 Rigidbody2D:
@@ -1851,7 +1851,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0035582185, y: 0.9913024}
+  m_Size: {x: 0.0035582185, y: 0.95}
   m_EdgeRadius: 0
 --- !u!1 &1763605525
 GameObject:
