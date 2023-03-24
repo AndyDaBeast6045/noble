@@ -243,4 +243,14 @@ public class PlayerMovement : MonoBehaviour
             inputIsEnabled = true;
         }
     }
+
+    public bool GetIsGrounded()
+    {
+        return isGrounded;
+    }
+
+    public bool GetIfCanDash()
+    {
+        return canDash;
+    }
 }

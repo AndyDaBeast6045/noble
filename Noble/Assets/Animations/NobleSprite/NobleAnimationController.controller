@@ -14,7 +14,7 @@ AnimatorStateMachine:
     m_Position: {x: 50, y: 380, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 237876172803913471}
-    m_Position: {x: 120, y: 250, z: 0}
+    m_Position: {x: 130, y: 250, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1934986761914374663}
     m_Position: {x: 360, y: 290, z: 0}
@@ -123,7 +123,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
+  - m_Name: SwordState
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -197,7 +203,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 4
+    m_ConditionEvent: SwordState
+    m_EventTreshold: 2
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1893601545542352589}
   m_Solo: 0
@@ -219,7 +228,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 4
+    m_ConditionEvent: SwordState
+    m_EventTreshold: 1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1893601545542352589}
   m_Solo: 0

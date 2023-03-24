@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 301979165688517373}
   - component: {fileID: 301979165688517372}
   - component: {fileID: 3715885778549023717}
-  - component: {fileID: 2839532193293662642}
+  - component: {fileID: 1248368942904252903}
   m_Layer: 0
   m_Name: Noble
   m_TagString: Player
@@ -177,7 +177,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &2839532193293662642
+--- !u!114 &1248368942904252903
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
