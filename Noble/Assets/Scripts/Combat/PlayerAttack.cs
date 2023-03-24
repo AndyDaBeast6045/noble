@@ -24,7 +24,7 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) && attackInputBuffer.Count == 0)
         {
             attackInputBuffer.Enqueue(swingAnimations[swordState]);
             playerAnimator.Play(swingAnimations[swordState]);
@@ -37,7 +37,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void RemoveAttackFromQueue()
     {
-        // attackInputBuffer.Dequeue();
+        attackInputBuffer.Dequeue();
     }
 
     private IEnumerator WaitForSwordReset()
