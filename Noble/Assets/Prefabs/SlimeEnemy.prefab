@@ -171,7 +171,7 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9061177945400184217}
   m_BodyType: 0
-  m_Simulated: 1
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
@@ -201,4 +201,5 @@ MonoBehaviour:
   projectileFireTransform: {fileID: 8817063939170997827}
   timer: 0
   minDistanceToFire: 0
+  timerDelta: 0
   rb: {fileID: 0}

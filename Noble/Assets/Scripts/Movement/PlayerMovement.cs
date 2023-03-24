@@ -36,7 +36,8 @@ public class PlayerMovement : MonoBehaviour
     private float horizontal;
     private bool canJump;
     private bool canDash;
-    private bool enableInput;
+    private bool inputIsEnabled;
+    private bool isFacingAndTouchingWall;
     private int jumpCounter;
     private float coyoteTime;
     private float coyoteTimeDelta;
@@ -51,28 +52,33 @@ public class PlayerMovement : MonoBehaviour
         jumpCounter = 0;
         jumpForce = 275f;
         playerSpeed = 3f;
-        enableInput = true;
+        inputIsEnabled = true;
         isGrounded = true;
         isFlipped = false;
+        isFacingAndTouchingWall = false;
         spawnLocation = player.transform.position;
     }
 
     // update function
     private void Update()
     {
-        if (player.transform.position.y <= 1f)
+        // check and see if the player is on the lowest platform
+        if (player.transform.position.y <= 1.25f)
             isGrounded = true;
 
         // Check and see if the player can take in input
 
         if (isGrounded)
-            enableInput = true;
+        {
+            inputIsEnabled = true;
+            isFacingAndTouchingWall = false;
+        }
 
         // get the direction that the player is facing
         horizontal = Input.GetAxisRaw("Horizontal");
 
         // sets the status if the player can jump or not
-        if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 2 && enableInput)
+        if (Input.GetKeyDown(KeyCode.X) && jumpCounter < 1)
         {
             canJump = true;
         }
@@ -85,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // start dashing
-        if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0 && enableInput)
+        if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0 && inputIsEnabled)
         {
             canDash = true;
         }
@@ -111,23 +117,34 @@ public class PlayerMovement : MonoBehaviour
     // fixed update, physics operations done here
     private void FixedUpdate()
     {
+        Debug.Log("here is if the player is facing the wall" + isFacingAndTouchingWall);
         // set the direction the player is facing
         if (!isFlipped && horizontal == -1)
         {
             player.transform.Rotate(new Vector3(0, 180, 0));
             isFlipped = true;
+            if (!inputIsEnabled)
+                isFacingAndTouchingWall = !isFacingAndTouchingWall;
         }
 
         if (isFlipped && horizontal == 1)
         {
             player.transform.Rotate(new Vector3(0, -180, 0));
             isFlipped = false;
+            if (!inputIsEnabled)
+                isFacingAndTouchingWall = !isFacingAndTouchingWall;
         }
 
         // get the player speed;
 
-        if (enableInput)
+        if (inputIsEnabled || !isFacingAndTouchingWall)
+        {
             speed = new Vector2(horizontal * playerSpeed, rb.velocity.y);
+        }
+        else
+        {
+            speed = new Vector2(0, rb.velocity.y);
+        }
 
         rb.velocity = speed;
 
@@ -164,10 +181,16 @@ public class PlayerMovement : MonoBehaviour
     // check for collisions
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            isFacingAndTouchingWall = true;
+            canDash = false;
+        }
+
         if (collision.gameObject.CompareTag("Platform"))
         {
             jumpCounter = 0;
-            if (enableInput)
+            if (inputIsEnabled)
                 isGrounded = true;
         }
     }
@@ -176,8 +199,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall") && !isGrounded)
         {
-            enableInput = false;
-            speed = new Vector2(0, rb.velocity.y);
+            inputIsEnabled = false;
         }
     }
 
@@ -188,7 +210,8 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = false;
         else if (collision.gameObject.CompareTag("Wall"))
         {
-            enableInput = true;
+            inputIsEnabled = true;
+            isFacingAndTouchingWall = false;
         }
     }
 
@@ -197,7 +220,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Wall") && !isGrounded)
         {
-            enableInput = false;
+            inputIsEnabled = false;
             speed = new Vector2(0, rb.velocity.y);
         }
         else if (collider.gameObject.CompareTag("Trap") || collider.gameObject.CompareTag("Enemy"))
@@ -217,7 +240,7 @@ public class PlayerMovement : MonoBehaviour
         if (collider.gameObject.CompareTag("Wall"))
         {
             Debug.Log("Did I leave the wall?");
-            enableInput = true;
+            inputIsEnabled = true;
         }
     }
 }

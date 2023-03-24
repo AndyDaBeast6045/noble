@@ -30,7 +30,7 @@ public class FireProjectile : MonoBehaviour
 
     void Start()
     {
-        timer = 3.0f;
+        timer = 5.0f;
         timerDelta = timer;
         Debug.Log("Here is the timer delta" + timerDelta);
     }

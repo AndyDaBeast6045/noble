@@ -12,11 +12,11 @@ public class ProjectileBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        projectileVelocity = 8f;
+        projectileVelocity = 5f;
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player");
         Vector3 direction = player.transform.position - this.transform.position;
-        rb.velocity = new Vector2(direction.x, direction.y).normalized * projectileVelocity;
+        rb.velocity = new Vector2(direction.x, 0).normalized * projectileVelocity;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
