@@ -16,8 +16,9 @@ public class PlayerAttack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        swordState = 0;
         playerAnimator = this.gameObject.GetComponent<Animator>();
+        swordState = 0;
+        playerAnimator.SetFloat("SwordState", swordState);
     }
 
     // Update is called once per frame
@@ -30,7 +31,7 @@ public class PlayerAttack : MonoBehaviour
             swordState++;
             animatorInfo = this.playerAnimator.GetCurrentAnimatorClipInfo(0);
             currentAnimation = animatorInfo[0].clip.name;
-            Debug.Log(currentAnimation);
+            playerAnimator.SetFloat("SwordState", swordState);
         }
     }
 
@@ -41,8 +42,9 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator WaitForSwordReset()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1f);
         swordState = 0;
+        playerAnimator.SetFloat("SwordState", swordState);
     }
 
     private void StartSwordResetTimer()
@@ -59,5 +61,6 @@ public class PlayerAttack : MonoBehaviour
     private void ResetSwordState()
     {
         swordState = 0;
+        playerAnimator.SetFloat("SwordState", swordState);
     }
 }
