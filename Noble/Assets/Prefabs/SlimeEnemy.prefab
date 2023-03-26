@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8817063939170997827}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ProjectileFirePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,8 @@ GameObject:
   - component: {fileID: -4453844991872030431}
   - component: {fileID: 3928735185471255829}
   - component: {fileID: 4919818111599883836}
-  m_Layer: 0
+  - component: {fileID: 7763409796343584879}
+  m_Layer: 2
   m_Name: SlimeEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +183,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &4919818111599883836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,10 +197,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 301979165688517363, guid: 81c50791cd15748828158ef2fc6b62fc, type: 3}
-  enemy: {fileID: 9061177945400184217}
   projectile: {fileID: 4956443319128334155, guid: b57a40038eb874b33be7594d945f65e8, type: 3}
   projectileFireTransform: {fileID: 8817063939170997827}
   timer: 0
   minDistanceToFire: 0
   timerDelta: 0
-  rb: {fileID: 0}
+--- !u!114 &7763409796343584879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9061177945400184217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b42b336233e4341699861df6719c27fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

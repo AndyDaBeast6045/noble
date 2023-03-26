@@ -2,51 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This class handles the input and physics related to the movement of the player
 public class PlayerMovement : MonoBehaviour
 {
-    // Serialized Fields used by this script
-    [SerializeField]
-    GameObject player;
-
-    //[SerializeField]
-    // Camera Camera;
-
-    [SerializeField]
-    Rigidbody2D rb;
-
+    // amount of force applied when jumping
     [SerializeField]
     float jumpForce;
 
+    // amount of force applied when dashing
     [SerializeField]
     float dashForce;
 
+    // the movement speed of the player
     [SerializeField]
     float playerSpeed;
 
+    // bool that reflects if the player is touching the ground
     [SerializeField]
     bool isGrounded;
 
+    // gets the direction the player is facing
     [SerializeField]
     bool isFlipped;
 
+    // where the player loads in when the scene starts or when respawning
     [SerializeField]
     Vector2 spawnLocation;
 
+    // vars that are initialized in start
+    private Rigidbody2D rb;
+    private int jumpCounter;
+    private bool inputIsEnabled;
+    private float dashTime;
+    private float dashTimeDelta;
+    private bool isFacingAndTouchingWall;
+
+    // vars that are initialized elsewhere
     private Vector2 speed;
     private float horizontal;
     private bool canJump;
     private bool canDash;
-    private bool inputIsEnabled;
-    private bool isFacingAndTouchingWall;
-    private int jumpCounter;
-    private float coyoteTime;
-    private float coyoteTimeDelta;
-    private float dashTime;
-    private float dashTimeDelta;
 
     // start method
     private void Start()
     {
+        rb = this.gameObject.GetComponent<Rigidbody2D>();
         dashTime = 0.6f; // should last for approximately 60 frames
         dashTimeDelta = dashTime;
         jumpCounter = 0;
@@ -56,14 +56,14 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = true;
         isFlipped = false;
         isFacingAndTouchingWall = false;
-        spawnLocation = player.transform.position;
+        spawnLocation = this.transform.position;
     }
 
     // update function
     private void Update()
     {
         // check and see if the player is on the lowest platform
-        if (player.transform.position.y <= 1.25f)
+        if (this.transform.position.y <= 1.25f)
             isGrounded = true;
 
         // Check and see if the player can take in input
@@ -117,27 +117,28 @@ public class PlayerMovement : MonoBehaviour
     // fixed update, physics operations done here
     private void FixedUpdate()
     {
-        Debug.Log("here is if the player is facing the wall" + isFacingAndTouchingWall);
         // set the direction the player is facing
         if (!isFlipped && horizontal == -1)
         {
-            player.transform.Rotate(new Vector3(0, 180, 0));
+            this.transform.Rotate(new Vector3(0, 180, 0));
             isFlipped = true;
             if (!inputIsEnabled)
                 isFacingAndTouchingWall = !isFacingAndTouchingWall;
         }
-
-        if (isFlipped && horizontal == 1)
+        else if (isFlipped && horizontal == 1)
         {
-            player.transform.Rotate(new Vector3(0, -180, 0));
+            this.transform.Rotate(new Vector3(0, -180, 0));
             isFlipped = false;
             if (!inputIsEnabled)
                 isFacingAndTouchingWall = !isFacingAndTouchingWall;
         }
 
-        // get the player speed;
-
-        if (inputIsEnabled || !isFacingAndTouchingWall)
+        // get the player speed
+        if (canDash)
+        {
+            speed = new Vector2(horizontal * playerSpeed * 2, rb.velocity.y);
+        }
+        else if (inputIsEnabled || !isFacingAndTouchingWall)
         {
             speed = new Vector2(horizontal * playerSpeed, rb.velocity.y);
         }
@@ -153,28 +154,8 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.gravityScale = 1;
             rb.AddForce(new Vector2(0, jumpForce));
-            coyoteTimeDelta = 0;
             jumpCounter++;
             canJump = false;
-        }
-
-        // Do dash if the player is able to dash
-        if (canDash)
-        {
-            rb.velocity = (new Vector2(horizontal * playerSpeed * 2, rb.velocity.y));
-        }
-    }
-
-    // late Update
-    private void LateUpdate()
-    {
-        if (coyoteTimeDelta > 0 && isGrounded)
-        {
-            rb.gravityScale = 0;
-        }
-        else
-        {
-            rb.gravityScale = 1;
         }
     }
 
@@ -195,6 +176,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // check for continous collisions
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Wall") && !isGrounded)
@@ -218,37 +200,25 @@ public class PlayerMovement : MonoBehaviour
     // check if entering certain triggers
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Wall") && !isGrounded)
-        {
-            inputIsEnabled = false;
-            speed = new Vector2(0, rb.velocity.y);
-        }
-        else if (collider.gameObject.CompareTag("Trap") || collider.gameObject.CompareTag("Enemy"))
+        if (collider.gameObject.CompareTag("Trap") || collider.gameObject.CompareTag("Enemy"))
         {
             rb.velocity = new Vector2(0, 0);
             if (isFlipped)
             {
-                player.transform.Rotate(new Vector3(0, -180, 0));
+                this.transform.Rotate(new Vector3(0, -180, 0));
                 isFlipped = false;
             }
-            player.transform.position = spawnLocation;
+            this.transform.position = spawnLocation;
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collider)
-    {
-        if (collider.gameObject.CompareTag("Wall"))
-        {
-            Debug.Log("Did I leave the wall?");
-            inputIsEnabled = true;
-        }
-    }
-
+    // return true if is grounded, else return false
     public bool GetIsGrounded()
     {
         return isGrounded;
     }
 
+    // return true if can dash, else return false
     public bool GetIfCanDash()
     {
         return canDash;
