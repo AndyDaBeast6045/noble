@@ -13,22 +13,16 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField]
     float speed;
 
-    [SerializeField]
-    bool isRotated;
-
     private EnemyStateController enemyState;
     private Vector3 enemySpawnLocation;
-    private bool hasSetVelocity;
 
     // Start is called before the first frame update
     void Start()
     {
-        isRotated = false;
         enemyState = this.gameObject.GetComponent<EnemyStateController>();
         enemyState.SetCurrentFightState("Patrol");
         enemyState.SetCurrentDirection("Right");
         enemySpawnLocation = this.transform.position;
-        hasSetVelocity = false;
     }
 
     void FixedUpdate()
@@ -63,14 +57,12 @@ public class EnemyMovement : MonoBehaviour
             {
                 rb.velocity = new Vector3(speed, 0);
             }
-            hasSetVelocity = true;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rb.velocity.x);
         if (Mathf.Abs(player.transform.position.x - this.transform.position.x) < 5f)
         {
             enemyState.SetCurrentFightState("Attack");
@@ -98,7 +90,6 @@ public class EnemyMovement : MonoBehaviour
             this.transform.Rotate(new Vector3(0, 180, 0));
             enemyState.SetCurrentDirection("Right");
             speed = -speed;
-            isRotated = false;
         }
         else if (
             referencePosition.x < this.transform.position.x
@@ -109,7 +100,6 @@ public class EnemyMovement : MonoBehaviour
             this.transform.Rotate(new Vector3(0, -180, 0));
             enemyState.SetCurrentDirection("Left");
             speed = -speed;
-            isRotated = true;
         }
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// This class handles the scheuling of projectile firing
+// This class handles the scheduling of projectile firing
 public class FireProjectile : MonoBehaviour
 {
     // player references
@@ -34,7 +34,6 @@ public class FireProjectile : MonoBehaviour
 
     // make sure the enemy is in sight before firing
     private RaycastHit2D hit;
-    private Ray2D ray;
     private bool playerIsInSight;
     private int direction;
 
@@ -47,9 +46,10 @@ public class FireProjectile : MonoBehaviour
         timerDelta = 0;
     }
 
-    //
+    // fixed update
     void FixedUpdate()
     {
+        // get the direction the enemy is facing before sending the raycast
         if (enemyState.GetCurrentDirection().Equals("Left"))
         {
             direction = -1;
@@ -58,11 +58,11 @@ public class FireProjectile : MonoBehaviour
         {
             direction = 1;
         }
-        Debug.DrawRay(transform.position, new Vector2(direction * 5, 0), Color.green);
-        hit = Physics2D.Raycast(this.transform.position, new Vector2(direction * 5, 0));
+
+        // check and see if the player is in the line of sight of the enemy
+        hit = Physics2D.Raycast(this.transform.position, new Vector2(direction, 0));
         if (hit.collider != null)
         {
-            Debug.Log("We are hitting" + hit.collider.gameObject.name);
             if (hit.collider.gameObject.CompareTag("Player"))
             {
                 playerIsInSight = true;
@@ -72,20 +72,19 @@ public class FireProjectile : MonoBehaviour
                 playerIsInSight = false;
             }
         }
-        else
-        {
-            Debug.Log("The ray is not hitting anything");
-        }
     }
 
     // update method
     void Update()
     {
-        Debug.Log("Player is in sight? " + playerIsInSight);
         // check to see if in range
         if (Mathf.Abs(player.transform.position.x - this.transform.position.x) < minDistanceToFire)
         {
             timerDelta -= Time.deltaTime; // countdown timer when in range
+
+            // only fire when the timer delta is ready, the enemy is in an attack state,
+            // and the enemy is facing the player
+            // raycast fixes bug where the enemy will fire the projectile in the wrong direction, when rotating
             if (
                 timerDelta <= 0
                 && enemyState.GetCurrentFightState().Equals("Attack")
