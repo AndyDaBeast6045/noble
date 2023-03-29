@@ -83,4 +83,9 @@ public class PlayerAnimation : MonoBehaviour
         swordState = 0;
         playerAnimator.SetFloat("SwordState", swordState);
     }
+
+    public int GetCurrentSwordState()
+    {
+        return swordState; 
+    }
 }

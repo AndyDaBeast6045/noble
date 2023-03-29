@@ -9,6 +9,9 @@ TagManager:
   - Enemy
   - Wall
   - Projectile
+  - Ground
+  - Floor
+  - PlayerSword
   layers:
   - Default
   - TransparentFX

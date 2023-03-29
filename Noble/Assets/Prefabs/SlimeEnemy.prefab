@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 3928735185471255829}
   - component: {fileID: 4919818111599883836}
   - component: {fileID: 7763409796343584879}
+  - component: {fileID: 5421047466376795361}
   m_Layer: 2
   m_Name: SlimeEnemy
   m_TagString: Untagged
@@ -61,8 +62,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9061177945400184217}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.61, y: 1.81, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalPosition: {x: 1.61, y: 1, z: 0}
+  m_LocalScale: {x: 2.75, y: 2.75, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8817063939170997827}
@@ -134,9 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 3928735185471255829}
-  player: {fileID: 8107537632188616367, guid: 81c50791cd15748828158ef2fc6b62fc, type: 3}
+  player: {fileID: 301979165688517363, guid: 81c50791cd15748828158ef2fc6b62fc, type: 3}
   speed: 0
-  isRotated: 0
 --- !u!61 &-4453844991872030431
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -199,9 +199,9 @@ MonoBehaviour:
   player: {fileID: 301979165688517363, guid: 81c50791cd15748828158ef2fc6b62fc, type: 3}
   projectile: {fileID: 4956443319128334155, guid: b57a40038eb874b33be7594d945f65e8, type: 3}
   projectileFireTransform: {fileID: 8817063939170997827}
-  timer: 0
-  minDistanceToFire: 0
-  timerDelta: 0
+  timer: 3
+  minDistanceToFire: 10
+  timerDelta: 1.5
 --- !u!114 &7763409796343584879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,3 +214,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42b336233e4341699861df6719c27fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+--- !u!114 &5421047466376795361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9061177945400184217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c9ea332962b94ba9a33f2661277548c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingHealth: 100

@@ -4,9 +4,23 @@ using UnityEngine;
 
 public class HealthConstructor : MonoBehaviour
 {
-    // Fields
-    int _currentHealth;
-    int _currentMaxHealth;
+    private int _currentMaxHealth;
+    private int _currentHealth;
+
+    void Start()
+    {
+        _currentMaxHealth = 100;
+        _currentHealth = _currentMaxHealth;
+    }
+
+    void Update()
+    {
+        if (_currentHealth <= 0)
+        {
+            Debug.Log("The player has ran out of health .. and the application is quitting");
+            UnityEditor.EditorApplication.isPlaying = false;
+        }
+    }
 
     //Properties
     public int Health
@@ -53,8 +67,7 @@ public class HealthConstructor : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Projectile"))
         {
-            Debug.Log("The player has been hit by a projectile... and the application is quitting");
-            UnityEditor.EditorApplication.isPlaying = false;
+            _currentHealth -= 25;
         }
     }
 }

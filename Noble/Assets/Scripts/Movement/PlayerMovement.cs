@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private float dashTime;
     private float dashTimeDelta;
     private bool isFacingAndTouchingWall;
+    private bool isOnPlatform;
 
     // vars that are initialized elsewhere
     private Vector2 speed;
@@ -56,12 +57,14 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = true;
         isFlipped = false;
         isFacingAndTouchingWall = false;
+        isOnPlatform = false;
         spawnLocation = this.transform.position;
     }
 
     // update function
     private void Update()
     {
+        Debug.Log("Player is on Platform" + isOnPlatform);
         // check and see if the player is on the lowest platform
         if (this.transform.position.y <= 1.25f)
             isGrounded = true;
@@ -152,7 +155,6 @@ public class PlayerMovement : MonoBehaviour
         // Do jump if the player can jump
         if (canJump)
         {
-            rb.gravityScale = 1;
             rb.AddForce(new Vector2(0, jumpForce));
             jumpCounter++;
             canJump = false;
@@ -162,6 +164,14 @@ public class PlayerMovement : MonoBehaviour
     // check for collisions
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("PlayerSword"))
+        {
+            Physics2D.IgnoreCollision(
+                this.gameObject.GetComponent<Collider2D>(),
+                collision.collider
+            );
+            Debug.Log("ignoring the collision");
+        }
         if (collision.gameObject.CompareTag("Wall"))
         {
             isFacingAndTouchingWall = true;
@@ -169,6 +179,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (collision.gameObject.CompareTag("Platform"))
+        {
+            jumpCounter = 0;
+            if (inputIsEnabled)
+            {
+                isGrounded = true;
+                isOnPlatform = true;
+            }
+        }
+
+        if (collision.gameObject.CompareTag("Floor"))
         {
             jumpCounter = 0;
             if (inputIsEnabled)
@@ -188,8 +208,15 @@ public class PlayerMovement : MonoBehaviour
     // check for the end of collisions
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Platform"))
+        if (collision.gameObject.CompareTag("Floor"))
+        {
             isGrounded = false;
+        }
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            isGrounded = false;
+            isOnPlatform = false;
+        }
         else if (collision.gameObject.CompareTag("Wall"))
         {
             inputIsEnabled = true;
@@ -222,5 +249,10 @@ public class PlayerMovement : MonoBehaviour
     public bool GetIfCanDash()
     {
         return canDash;
+    }
+
+    public bool GetIsOnPlatform()
+    {
+        return isOnPlatform;
     }
 }
