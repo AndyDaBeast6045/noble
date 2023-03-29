@@ -5,29 +5,33 @@ using UnityEngine;
 // This class handles the input and physics related to the movement of the player
 public class PlayerMovement : MonoBehaviour
 {
-    // amount of force applied when jumping
+    // game manager reference
     [SerializeField]
-    float jumpForce;
-
-    // amount of force applied when dashing
-    [SerializeField]
-    float dashForce;
-
-    // the movement speed of the player
-    [SerializeField]
-    float playerSpeed;
-
-    // bool that reflects if the player is touching the ground
-    [SerializeField]
-    bool isGrounded;
-
-    // gets the direction the player is facing
-    [SerializeField]
-    bool isFlipped;
+    private GameController gameController;
 
     // where the player loads in when the scene starts or when respawning
     [SerializeField]
-    Vector2 spawnLocation;
+    private Vector2 spawnLocation;
+
+    // amount of force applied when jumping
+    [SerializeField]
+    private float jumpForce;
+
+    // amount of force applied when dashing
+    [SerializeField]
+    private float dashForce;
+
+    // the movement speed of the player
+    [SerializeField]
+    private float playerSpeed;
+
+    // bool that reflects if the player is touching the ground
+    [SerializeField]
+    private bool isGrounded;
+
+    // gets the direction the player is facing
+    [SerializeField]
+    private bool isFlipped;
 
     // vars that are initialized in start
     private Rigidbody2D rb;
@@ -47,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
     // start method
     private void Start()
     {
-        rb = this.gameObject.GetComponent<Rigidbody2D>();
+        rb = this.GetComponent<Rigidbody2D>();
         dashTime = 0.6f; // should last for approximately 60 frames
         dashTimeDelta = dashTime;
         jumpCounter = 0;
@@ -64,13 +68,17 @@ public class PlayerMovement : MonoBehaviour
     // update function
     private void Update()
     {
-        Debug.Log("Player is on Platform" + isOnPlatform);
+        // check if the player has fallen up the map
+        if (this.transform.position.y < -1)
+        {
+            gameController.ResetEnemies();
+            this.transform.position = spawnLocation;
+        }
         // check and see if the player is on the lowest platform
         if (this.transform.position.y <= 1.25f)
             isGrounded = true;
 
         // Check and see if the player can take in input
-
         if (isGrounded)
         {
             inputIsEnabled = true;
@@ -170,7 +178,6 @@ public class PlayerMovement : MonoBehaviour
                 this.gameObject.GetComponent<Collider2D>(),
                 collision.collider
             );
-            Debug.Log("ignoring the collision");
         }
         if (collision.gameObject.CompareTag("Wall"))
         {
@@ -227,7 +234,7 @@ public class PlayerMovement : MonoBehaviour
     // check if entering certain triggers
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Trap") || collider.gameObject.CompareTag("Enemy"))
+        if (collider.gameObject.CompareTag("Trap"))
         {
             rb.velocity = new Vector2(0, 0);
             if (isFlipped)
@@ -235,6 +242,7 @@ public class PlayerMovement : MonoBehaviour
                 this.transform.Rotate(new Vector3(0, -180, 0));
                 isFlipped = false;
             }
+            gameController.ResetEnemies();
             this.transform.position = spawnLocation;
         }
     }

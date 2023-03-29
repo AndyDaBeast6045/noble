@@ -26,6 +26,7 @@ public class ProjectileBehavior : MonoBehaviour
             direction = 1;
         }
         rb.velocity = new Vector2(projectileVelocity * direction, 0);
+        StartCoroutine(WaitToDestroy());
     }
 
     // check for collisions with non-enemy game objects
@@ -42,5 +43,12 @@ public class ProjectileBehavior : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+
+    // destroys the projectile after the time has elapsed
+    IEnumerator WaitToDestroy()
+    {
+        yield return new WaitForSeconds(5);
+        Destroy(this.gameObject);
     }
 }

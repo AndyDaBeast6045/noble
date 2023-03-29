@@ -7,27 +7,27 @@ public class FireProjectile : MonoBehaviour
 {
     // player references
     [SerializeField]
-    GameObject player;
+    private GameObject player;
 
     // projectile reference
     [SerializeField]
-    GameObject projectile;
+    private GameObject projectile;
 
     // projectile transform reference
     [SerializeField]
-    Transform projectileFireTransform;
+    private Transform projectileFireTransform;
 
     // timer
     [SerializeField]
-    float timer;
+    private float timer;
 
     // min distance to fire
     [SerializeField]
-    float minDistanceToFire;
+    private float minDistanceToFire;
 
     // current timer time
     [SerializeField]
-    float timerDelta;
+    private float timerDelta;
 
     // enemy that has this script attached
     private EnemyStateController enemyState;

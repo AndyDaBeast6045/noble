@@ -4,38 +4,42 @@ using UnityEngine;
 
 public class EnemyStateController : MonoBehaviour
 {
+    // player reference
     [SerializeField]
     private GameObject player;
 
     // make sure the enemy is in sight before firing
     private RaycastHit2D hit;
-    private bool playerIsInSight;
     private Vector2 rayDirection;
 
+    // different combat states an enemy can be in
     private enum FightState
     {
         ATTACK,
         PATROL,
-        WAIT
+        WAIT,
+        DEAD
     }
 
+    // directions the enemy can be facing
     private enum EnemyDirection
     {
         LEFT,
-        RIGHT
+        RIGHT,
+        UP,
+        DOWN
     }
 
+    // enum references
     FightState currentFightState;
     EnemyDirection currentEnemyDirection;
 
     void Start()
     {
-        playerIsInSight = false;
         rayDirection = new Vector2(1, 0);
     }
 
-    void FixedUpdate() { }
-
+    // set current fight state
     public void SetCurrentFightState(string state)
     {
         if (state.Equals("ATTACK"))
@@ -46,17 +50,23 @@ public class EnemyStateController : MonoBehaviour
         {
             currentFightState = FightState.PATROL;
         }
-        else
+        else if (state.Equals("WAIT"))
         {
             currentFightState = FightState.WAIT;
         }
+        else
+        {
+            currentFightState = FightState.DEAD;
+        }
     }
 
+    // get the current fight state
     public string GetCurrentFightState()
     {
         return currentFightState.ToString();
     }
 
+    // set the enemy's direction
     public void SetCurrentDirection(string state)
     {
         if (state.Equals("LEFT"))
@@ -69,13 +79,16 @@ public class EnemyStateController : MonoBehaviour
         }
     }
 
+    // get the enemy's direction
     public string GetCurrentDirection()
     {
         return currentEnemyDirection.ToString();
     }
 
+    // check if the player is visable to the enemy
     public bool GetIfPlayerIsInSight(float yDirection, bool ignoreEnemyDirection)
     {
+        // returns true if there is no obstacle and the enemy is facing the player
         if (!ignoreEnemyDirection)
         {
             if (currentEnemyDirection == EnemyDirection.LEFT)
@@ -87,7 +100,7 @@ public class EnemyStateController : MonoBehaviour
                 rayDirection.x = 1;
             }
         }
-        else
+        else // this method will return true if there is no obstacle between the enemy and player
         {
             if (player.transform.position.x < this.transform.position.x)
             {
@@ -99,12 +112,11 @@ public class EnemyStateController : MonoBehaviour
             }
         }
 
+        // cast a ray and see if it hits the player
         rayDirection.y = yDirection;
-        Debug.DrawRay(this.transform.position, rayDirection, Color.green);
         hit = Physics2D.Raycast(this.transform.position, rayDirection, Mathf.Infinity);
         if (hit.collider != null)
         {
-            Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.gameObject.CompareTag("Player"))
             {
                 return true;

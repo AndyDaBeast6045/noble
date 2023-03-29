@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 301979165688517368}
   - component: {fileID: 301979165688517375}
   - component: {fileID: 301979165688517374}
-  - component: {fileID: 301979165688517373}
   - component: {fileID: 301979165688517372}
   - component: {fileID: 3715885778549023717}
+  - component: {fileID: 301979165688517373}
   - component: {fileID: 1248368942904252903}
   - component: {fileID: 6895100467186608594}
   m_Layer: 0
@@ -117,24 +117,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.15, y: 0.33929855}
   m_EdgeRadius: 0
---- !u!114 &301979165688517373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 301979165688517363}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0340ce6daff8c420d93fc66ec259611a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpForce: 0
-  dashForce: 0
-  playerSpeed: 0
-  isGrounded: 0
-  isFlipped: 0
-  spawnLocation: {x: 0, y: 0}
 --- !u!50 &301979165688517372
 Rigidbody2D:
   serializedVersion: 4
@@ -176,6 +158,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &301979165688517373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301979165688517363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0340ce6daff8c420d93fc66ec259611a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpForce: 0
+  dashForce: 0
+  playerSpeed: 0
+  isGrounded: 0
+  isFlipped: 0
+  spawnLocation: {x: 0, y: 0}
 --- !u!114 &1248368942904252903
 MonoBehaviour:
   m_ObjectHideFlags: 0

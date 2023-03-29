@@ -4,44 +4,57 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    // game manager reference
+    [SerializeField]
+    private GameController gameController;
+
+    // health variables
     [SerializeField]
     private float startingHealth;
-
     private float currentHealth;
+
+    // player and enemy references
     private GameObject enemy;
-    private GameObject player; 
-    private PlayerAnimation playerAnimation; 
+    private EnemyStateController enemyStateController;
+    private GameObject player;
+    private PlayerAnimation playerAnimation;
 
     // Start is called before the first frame update
     void Start()
     {
         enemy = this.GetComponent<GameObject>();
-        player = GameObject.Find("Player"); 
-        playerAnimation = player.GetComponent<PlayerAnimation>(); 
+        enemyStateController = this.GetComponent<EnemyStateController>();
+        player = GameObject.Find("Player");
+        playerAnimation = player.GetComponent<PlayerAnimation>();
         currentHealth = startingHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Enemy Current Health is..." + currentHealth);
+        // if the enemy runs out of health, disable its gameobject
         if (currentHealth <= 0)
         {
+            gameController.AddSlainEnemy(this.gameObject);
+            currentHealth = 100;
+            enemyStateController.SetCurrentFightState("DEAD");
             this.gameObject.SetActive(false);
         }
     }
 
+    // check for collisions with the player's weapons
     public void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("PlayerSword"))
         {
+            // deal 1 hit damage unless player is on 3rd swing
             if (playerAnimation.GetCurrentSwordState() < 2)
             {
-                currentHealth -= 50; 
+                currentHealth -= 50;
             }
-            else 
+            else
             {
-                currentHealth -= 100; 
+                currentHealth -= 100;
             }
             collision.collider.enabled = false;
         }

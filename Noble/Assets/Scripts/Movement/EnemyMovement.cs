@@ -5,25 +5,28 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField]
-    Rigidbody2D rb;
+    private GameObject player;
 
     [SerializeField]
-    GameObject player;
+    private Rigidbody2D rb;
 
+    [SerializeField]
+    private float speed;
+
+    // playermovement and enemystate script references
     private PlayerMovement playerMovement;
-
-    [SerializeField]
-    float speed;
-
     private EnemyStateController enemyState;
+
+    // stores where the enemy spawns in at
     private Vector3 enemySpawnLocation;
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Player name is..." + player.name);
         playerMovement = player.gameObject.GetComponent<PlayerMovement>();
         enemyState = this.gameObject.GetComponent<EnemyStateController>();
+
+        // initialize the direction of the enemy
         enemyState.SetCurrentFightState("PATROL");
         if (speed > 0)
         {
@@ -45,13 +48,13 @@ public class EnemyMovement : MonoBehaviour
             TryRotateEnemy(player.transform.position);
             rb.velocity = Vector2.right * speed;
         }
-
-        if (enemyState.GetCurrentFightState().Equals("WAIT"))
+        // stop moving towards the player but still execute attack
+        else if (enemyState.GetCurrentFightState().Equals("WAIT"))
         {
             rb.velocity = Vector2.zero;
         }
-        // return to the spawn point and continue patrolling
-        if (enemyState.GetCurrentFightState().Equals("PATROL"))
+        // return to the spawn point and patrol that location
+        else if (enemyState.GetCurrentFightState().Equals("PATROL"))
         {
             if (this.transform.position.x - enemySpawnLocation.x < -5)
             {
@@ -67,22 +70,27 @@ public class EnemyMovement : MonoBehaviour
 
                 TryRotateEnemy(enemySpawnLocation);
             }
-
+            // modify speed
             rb.velocity = Vector2.right * speed;
+        }
+        else // the enemy just respawned after being in a dead state
+        {
+            this.transform.position = enemySpawnLocation;
+            enemyState.SetCurrentFightState("PATROL");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Is the player grounded??...   " + playerMovement.GetIsGrounded());
+        // the enemy should attack the player if its within 20f and the player is in sight
         if (Mathf.Abs(player.transform.position.x - this.transform.position.x) <= 20f)
         {
             if (enemyState.GetIfPlayerIsInSight(0, true) || (!playerMovement.GetIsOnPlatform()))
             {
                 enemyState.SetCurrentFightState("ATTACK");
             }
-            else
+            else // will modify so an enemy will fire a projectile on wait
             {
                 enemyState.SetCurrentFightState("WAIT");
             }
@@ -95,10 +103,12 @@ public class EnemyMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
+        // disable this gameobject if it runs into a trap
         if (collider.gameObject.CompareTag("Trap"))
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
     }
 
+    // rotate the enemy sprite
     public void TryRotateEnemy(Vector3 referencePosition)
     {
         if (

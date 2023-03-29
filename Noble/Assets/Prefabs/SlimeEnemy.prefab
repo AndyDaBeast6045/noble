@@ -41,15 +41,15 @@ GameObject:
   m_Component:
   - component: {fileID: 5447068549889998416}
   - component: {fileID: 8967732855053472214}
-  - component: {fileID: -7819312798386997875}
   - component: {fileID: -4453844991872030431}
   - component: {fileID: 3928735185471255829}
+  - component: {fileID: -7819312798386997875}
   - component: {fileID: 4919818111599883836}
   - component: {fileID: 7763409796343584879}
   - component: {fileID: 5421047466376795361}
   m_Layer: 2
   m_Name: SlimeEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,21 +122,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-7819312798386997875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9061177945400184217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 733254cf7ef864d8b86515e9c2dda353, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 3928735185471255829}
-  player: {fileID: 301979165688517363, guid: 81c50791cd15748828158ef2fc6b62fc, type: 3}
-  speed: 0
 --- !u!61 &-4453844991872030431
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -184,6 +169,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &-7819312798386997875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9061177945400184217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 733254cf7ef864d8b86515e9c2dda353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 301979165688517363, guid: 81c50791cd15748828158ef2fc6b62fc, type: 3}
+  rb: {fileID: 3928735185471255829}
+  speed: 0
 --- !u!114 &4919818111599883836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,4 +227,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9ea332962b94ba9a33f2661277548c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameController: {fileID: 3403317799921700430, guid: 7770cca8101f2462c9b104308b088f16, type: 3}
   startingHealth: 100
