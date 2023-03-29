@@ -1294,6 +1294,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1576778583}
+    - target: {fileID: 8817063939170997827, guid: c6074a3440661400eb79c589394e160e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.177
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817063939170997827, guid: c6074a3440661400eb79c589394e160e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 9061177945400184217, guid: c6074a3440661400eb79c589394e160e, type: 3}
       propertyPath: m_Name
       value: SlimeEnemy1
