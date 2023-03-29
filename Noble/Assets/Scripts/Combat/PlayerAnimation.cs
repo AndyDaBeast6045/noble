@@ -11,6 +11,8 @@ public class PlayerAnimation : MonoBehaviour
     // player animation reference
     private Animator playerAnimator;
 
+    private Coroutine timer;
+
     // player attack variables
     private int swordState;
     private string[] swingAnimations = { "SwordAttackA", "SwordAttackB", "SwordAttackC" };
@@ -67,14 +69,16 @@ public class PlayerAnimation : MonoBehaviour
     // used by animation events to start a new sword timer
     private void StartSwordResetTimer()
     {
-        StopCoroutine("WaitForSwordReset");
-        StartCoroutine("WaitForSwordReset");
+        if (timer != null)
+            StopCoroutine(timer);
+        timer = StartCoroutine(WaitForSwordReset());
     }
 
     // used by animation events to stop the sword timer
     private void StopSwordResetTimer()
     {
-        StopCoroutine("WaitForSwordReset");
+        if (timer != null)
+            StopCoroutine(timer);
     }
 
     // resets the sword state back to 0
@@ -84,7 +88,7 @@ public class PlayerAnimation : MonoBehaviour
         playerAnimator.SetFloat("SwordState", swordState);
     }
 
-    // gets the current sword animation
+    // get current sword state
     public int GetCurrentSwordState()
     {
         return swordState;
