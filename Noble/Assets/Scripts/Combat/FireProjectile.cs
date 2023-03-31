@@ -32,10 +32,14 @@ public class FireProjectile : MonoBehaviour
     // enemy that has this script attached
     private EnemyStateController enemyState;
 
+    // enemy animator reference
+    private Animator enemyAnimator;
+
     // start function
     void Start()
     {
         enemyState = this.gameObject.GetComponent<EnemyStateController>();
+        enemyAnimator = this.GetComponent<Animator>();
         timer = 5.0f;
         timerDelta = 0;
     }
@@ -57,9 +61,17 @@ public class FireProjectile : MonoBehaviour
                     < minDistanceToFire
             )
             {
-                Instantiate(projectile, projectileFireTransform.position, Quaternion.identity);
+                Debug.Log("we are here per usual");
+                enemyAnimator.Play("SlimeAttack");
                 timerDelta = timer;
             }
         }
+    }
+
+    // do the projectile attack and animation
+    public void DoProjectileAttack()
+    {
+        Debug.Log("is this being called?");
+        Instantiate(projectile, projectileFireTransform.position, Quaternion.identity);
     }
 }

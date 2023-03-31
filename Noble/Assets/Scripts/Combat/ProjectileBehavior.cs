@@ -5,7 +5,7 @@ using UnityEngine;
 // This script handles the behavior of fired projectiles
 public class ProjectileBehavior : MonoBehaviour
 {
-    // vars initialized in start
+    // variables initialized in start
     private float projectileVelocity;
     private Rigidbody2D rb;
     private GameObject player;
