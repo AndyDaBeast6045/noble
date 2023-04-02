@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     // game manager reference
     [SerializeField]
-    private GameController gameController;
+    private EnemyRespawner respawner;
 
     // where the player loads in when the scene starts or when respawning
     [SerializeField]
@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
         // check if the player has fallen up the map
         if (this.transform.position.y < -1)
         {
-            gameController.ResetEnemies();
+            respawner.ResetEnemies();
             this.transform.position = spawnLocation;
         }
         // check and see if the player is on the lowest platform
@@ -242,7 +242,7 @@ public class PlayerMovement : MonoBehaviour
                 this.transform.Rotate(new Vector3(0, -180, 0));
                 isFlipped = false;
             }
-            gameController.ResetEnemies();
+            respawner.ResetEnemies();
             this.transform.position = spawnLocation;
         }
     }

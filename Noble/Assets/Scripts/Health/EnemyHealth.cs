@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This class keeps track of the health of the enemy
 public class EnemyHealth : MonoBehaviour
 {
     // game manager reference
     [SerializeField]
-    private GameController gameController;
+    private EnemyRespawner respawner;
 
     // health variables
     [SerializeField]
@@ -35,7 +36,7 @@ public class EnemyHealth : MonoBehaviour
         // if the enemy runs out of health, disable its gameobject
         if (currentHealth <= 0)
         {
-            gameController.AddSlainEnemy(this.gameObject);
+            respawner.AddSlainEnemy(this.gameObject);
             currentHealth = 100;
             enemyStateController.SetCurrentFightState("DEAD");
             this.gameObject.SetActive(false);

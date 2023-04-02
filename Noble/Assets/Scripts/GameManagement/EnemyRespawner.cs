@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // this class implements utility functions that pertain to core game mechanics
-public class GameController : MonoBehaviour
+public class EnemyRespawner : MonoBehaviour
 {
     // array of inactive game objects
     private Queue<GameObject> enemiesToRespawn;

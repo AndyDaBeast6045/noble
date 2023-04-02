@@ -107,6 +107,9 @@ public class EnemyMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
+        // ignore collisions with Background tat
+        if (collider.gameObject.CompareTag("Background"))
+            Physics2D.IgnoreCollision(this.gameObject.GetComponent<Collider2D>(), collider);
         // disable this gameobject if it runs into a trap
         if (collider.gameObject.CompareTag("Trap"))
             this.gameObject.SetActive(false);
