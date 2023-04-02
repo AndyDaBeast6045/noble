@@ -52,6 +52,7 @@ public class EnemyMovement : MonoBehaviour
         else if (enemyState.GetCurrentFightState().Equals("WAIT"))
         {
             rb.velocity = Vector2.zero;
+            TryRotateEnemy(player.transform.position);
         }
         // return to the spawn point and patrol that location
         else if (enemyState.GetCurrentFightState().Equals("PATROL"))
@@ -84,13 +85,16 @@ public class EnemyMovement : MonoBehaviour
     void Update()
     {
         // the enemy should attack the player if its within 20f and the player is in sight
-        if (Mathf.Abs(player.transform.position.x - this.transform.position.x) <= 20f)
+        if (Mathf.Abs(player.transform.position.x - this.transform.position.x) <= 10f)
         {
-            if (enemyState.GetIfPlayerIsInSight(0, true) || (!playerMovement.GetIsOnPlatform()))
+            if (
+                enemyState.GetIfPlayerIsInSight(0, true)
+                && !(Vector3.Distance(this.transform.position, player.transform.position) <= 5f)
+            )
             {
                 enemyState.SetCurrentFightState("ATTACK");
             }
-            else // will modify so an enemy will fire a projectile on wait
+            else
             {
                 enemyState.SetCurrentFightState("WAIT");
             }

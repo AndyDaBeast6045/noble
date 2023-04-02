@@ -48,7 +48,10 @@ public class FireProjectile : MonoBehaviour
     void Update()
     {
         // check to see if in range
-        if (enemyState.GetCurrentFightState().Equals("ATTACK"))
+        if (
+            enemyState.GetCurrentFightState().Equals("ATTACK")
+            || enemyState.GetCurrentFightState().Equals("WAIT")
+        )
         {
             timerDelta -= Time.deltaTime; // ountdown timer when in range
             // only fire when the timer delta is ready, the enemy is in an attack state,
