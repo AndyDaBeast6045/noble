@@ -68,6 +68,9 @@ public class PlayerMovement : MonoBehaviour
     // update function
     private void Update()
     {
+        // only here for testing purposes
+        if (Input.GetKeyDown(KeyCode.R))
+            RestartGameForTesting();
         // check if the player has fallen up the map
         if (this.transform.position.y < -1)
         {
@@ -75,15 +78,15 @@ public class PlayerMovement : MonoBehaviour
             this.transform.position = spawnLocation;
         }
         // check and see if the player is on the lowest platform
-        if (this.transform.position.y <= 1.25f)
-            isGrounded = true;
+        if (this.transform.position.y <= 1.6f)
+            // isGrounded = true;
 
-        // Check and see if the player can take in input
-        if (isGrounded)
-        {
-            inputIsEnabled = true;
-            isFacingAndTouchingWall = false;
-        }
+            // Check and see if the player can take in input
+            if (isGrounded)
+            {
+                inputIsEnabled = true;
+                isFacingAndTouchingWall = false;
+            }
 
         // get the direction that the player is facing
         horizontal = Input.GetAxisRaw("Horizontal");
@@ -262,5 +265,11 @@ public class PlayerMovement : MonoBehaviour
     public bool GetIsOnPlatform()
     {
         return isOnPlatform;
+    }
+
+    public void RestartGameForTesting()
+    {
+        transform.position = spawnLocation;
+        respawner.ResetEnemies();
     }
 }

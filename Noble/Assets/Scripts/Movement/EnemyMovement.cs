@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This class handles the movement of an eneymy game object
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField]
@@ -10,6 +11,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField]
     private Rigidbody2D rb;
 
+    // will be stationary if speed is set to 0
     [SerializeField]
     private float speed;
 

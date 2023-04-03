@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9ea332962b94ba9a33f2661277548c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameController: {fileID: 0}
+  respawner: {fileID: 0}
   startingHealth: 100
 --- !u!1 &5074620311218641560
 GameObject:

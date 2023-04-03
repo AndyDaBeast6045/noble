@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This class handles the health of the player
 public class HealthConstructor : MonoBehaviour
 {
     private int _currentMaxHealth;
@@ -15,6 +16,7 @@ public class HealthConstructor : MonoBehaviour
 
     void Update()
     {
+        Debug.Log("Here is the current health of the player: " + _currentHealth);
         if (_currentHealth <= 0)
         {
             Debug.Log("The player has ran out of health .. and the application is quitting");
@@ -68,6 +70,11 @@ public class HealthConstructor : MonoBehaviour
         if (collision.gameObject.CompareTag("Projectile"))
         {
             _currentHealth -= 25;
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            _currentHealth -= 10;
         }
     }
 }

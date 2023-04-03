@@ -25,6 +25,17 @@ public class DisableOnCollision : MonoBehaviour
         }
     }
 
+    // keep objects invisible if they are sitting in a trigger
+    void OnTriggerStay2D(Collider2D collider)
+    {
+        if (collider.gameObject.CompareTag("Platform") || collider.gameObject.CompareTag("Wall"))
+        {
+            // special case, keep the sprite renderer enabled, boundaries are invisible
+            if (!collider.gameObject.name.Contains("Boundary"))
+                this.GetComponent<SpriteRenderer>().enabled = false;
+        }
+    }
+
     // check for collision exits with platforms and walls and enable the mesh renderer if so
     void OnTriggerExit2D(Collider2D collider)
     {
