@@ -21,7 +21,8 @@ public class PlayerAnimation : MonoBehaviour
     private int swordState;
     private string[] swingAnimations = { "SwordAttackA", "SwordAttackB", "SwordAttackC" };
     private Queue<string> attackInputBuffer = new Queue<string>();
-    bool canAttack;
+    private bool canAttack;
+    private bool attackedInAir;
 
     // Start is called before the first frame update
     void Start()
@@ -31,13 +32,16 @@ public class PlayerAnimation : MonoBehaviour
         swordState = 0;
         playerAnimator.SetFloat("SwordState", swordState);
         canAttack = true;
+        attackedInAir = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (player.GetIsGrounded())
+            attackedInAir = false;
         // cancel attack animations, and reset them if the player leaves the ground or dashes
-        if (player.GetIsMoving())
+        if (player.GetIsMoving() && player.GetIsGrounded())
         {
             playerAnimator.Play("NobleIdle"); // Will be changed to jumping/dashing animation most likely
             while (attackInputBuffer.Count > 0)
@@ -52,13 +56,16 @@ public class PlayerAnimation : MonoBehaviour
             Input.GetKeyDown(KeyCode.C)
             && attackInputBuffer.Count == 0
             && canAttack
-            && !player.GetIsMoving()
+            && (!player.GetIsMoving() || (!player.GetIsGrounded() && player.GetIsMoving()))
+            && !attackedInAir
         )
         {
             attackInputBuffer.Enqueue(swingAnimations[swordState]);
             playerAnimator.Play(swingAnimations[swordState]);
             swordState++;
             playerAnimator.SetFloat("SwordState", swordState);
+            if (!player.GetIsGrounded())
+                attackedInAir = true;
         }
     }
 

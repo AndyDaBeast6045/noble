@@ -47,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
     private float horizontal;
     private bool canJump;
     private bool canDash;
+    private int toggleNum;
 
     // start method
     private void Start()
@@ -63,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
         isFacingAndTouchingWall = false;
         isOnPlatform = false;
         spawnLocation = this.transform.position;
+        toggleNum = 3;
     }
 
     // update function
@@ -79,14 +81,14 @@ public class PlayerMovement : MonoBehaviour
         }
         // check and see if the player is on the lowest platform
         if (this.transform.position.y <= 1.6f)
-            // isGrounded = true;
+            isGrounded = true;
 
-            // Check and see if the player can take in input
-            if (isGrounded)
-            {
-                inputIsEnabled = true;
-                isFacingAndTouchingWall = false;
-            }
+        // Check and see if the player can take in input
+        if (isGrounded)
+        {
+            inputIsEnabled = true;
+            isFacingAndTouchingWall = false;
+        }
 
         // get the direction that the player is facing
         horizontal = Input.GetAxisRaw("Horizontal");
@@ -282,6 +284,6 @@ public class PlayerMovement : MonoBehaviour
 
     public bool GetIsMoving()
     {
-        return !isGrounded || horizontal != 0;
+        return horizontal != 0;
     }
 }
