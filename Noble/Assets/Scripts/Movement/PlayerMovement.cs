@@ -36,10 +36,8 @@ public class PlayerMovement : MonoBehaviour
     // vars that are initialized in start
     private Rigidbody2D rb;
     private int jumpCounter;
-    private bool inputIsEnabled;
     private float dashTime;
     private float dashTimeDelta;
-    private bool isFacingAndTouchingWall;
     private bool isOnPlatform;
 
     // vars that are initialized elsewhere
@@ -58,10 +56,8 @@ public class PlayerMovement : MonoBehaviour
         jumpCounter = 0;
         jumpForce = 275f;
         playerSpeed = 3f;
-        inputIsEnabled = true;
         isGrounded = true;
         isFlipped = false;
-        isFacingAndTouchingWall = false;
         isOnPlatform = false;
         spawnLocation = this.transform.position;
         toggleNum = 3;
@@ -78,16 +74,6 @@ public class PlayerMovement : MonoBehaviour
         {
             respawner.ResetEnemies();
             this.transform.position = spawnLocation;
-        }
-        // check and see if the player is on the lowest platform
-        if (this.transform.position.y <= 1.6f)
-            isGrounded = true;
-
-        // Check and see if the player can take in input
-        if (isGrounded)
-        {
-            inputIsEnabled = true;
-            isFacingAndTouchingWall = false;
         }
 
         // get the direction that the player is facing
@@ -107,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // start dashing
-        if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0 && inputIsEnabled)
+        if (Input.GetKeyDown(KeyCode.Z) && jumpCounter == 0)
         {
             canDash = true;
         }
@@ -138,29 +124,40 @@ public class PlayerMovement : MonoBehaviour
         {
             this.transform.Rotate(new Vector3(0, 180, 0));
             isFlipped = true;
-            if (!inputIsEnabled)
-                isFacingAndTouchingWall = !isFacingAndTouchingWall;
         }
         else if (isFlipped && horizontal == 1)
         {
             this.transform.Rotate(new Vector3(0, -180, 0));
             isFlipped = false;
-            if (!inputIsEnabled)
-                isFacingAndTouchingWall = !isFacingAndTouchingWall;
         }
+
+        Debug.Log("here is horizontal before if  " + horizontal);
+
+        if (toggleNum == 1)
+        {
+            if (horizontal != -1)
+            {
+                horizontal = 0;
+            }
+        }
+        else if (toggleNum == 2)
+        {
+            if (horizontal != 1)
+            {
+                horizontal = 0;
+            }
+        }
+        Debug.Log("here is the toggle num" + toggleNum);
+        Debug.Log("here is horizontal after if  " + horizontal);
 
         // get the player speed
         if (canDash)
         {
             speed = new Vector2(horizontal * playerSpeed * 2, rb.velocity.y);
         }
-        else if (inputIsEnabled || !isFacingAndTouchingWall)
-        {
-            speed = new Vector2(horizontal * playerSpeed, rb.velocity.y);
-        }
         else
         {
-            speed = new Vector2(0, rb.velocity.y);
+            speed = new Vector2(horizontal * playerSpeed, rb.velocity.y);
         }
 
         rb.velocity = speed;
@@ -193,34 +190,46 @@ public class PlayerMovement : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Wall"))
         {
-            isFacingAndTouchingWall = true;
             canDash = false;
+            Vector3 colliderPos = collision.collider.bounds.center;
+            if (collision.gameObject.transform.position.x > this.transform.position.x)
+            {
+                toggleNum = 1;
+            }
+            else
+            {
+                toggleNum = 2;
+            }
         }
 
         if (collision.gameObject.CompareTag("Platform"))
         {
             jumpCounter = 0;
-            if (inputIsEnabled)
-            {
-                isGrounded = true;
-                isOnPlatform = true;
-            }
+            isGrounded = true;
+            isOnPlatform = true;
         }
 
         if (collision.gameObject.CompareTag("Floor"))
         {
             jumpCounter = 0;
-            if (inputIsEnabled)
-                isGrounded = true;
+            toggleNum = 3;
+            isGrounded = true;
         }
     }
 
     // check for continous collisions
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall") && !isGrounded)
+        if (collision.gameObject.CompareTag("Wall"))
         {
-            inputIsEnabled = false;
+            if (collision.gameObject.transform.position.x > this.transform.position.x)
+            {
+                toggleNum = 1;
+            }
+            else
+            {
+                toggleNum = 2;
+            }
         }
     }
 
@@ -238,8 +247,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Wall"))
         {
-            inputIsEnabled = true;
-            isFacingAndTouchingWall = false;
+            toggleNum = 3;
         }
     }
 
