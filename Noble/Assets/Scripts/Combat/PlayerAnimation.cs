@@ -10,6 +10,8 @@ public class PlayerAnimation : MonoBehaviour
 
     // player animation reference
     private Animator playerAnimator;
+    private AnimatorClipInfo[] playerAnimatorInfo;
+    private string currentAnimation;
 
     // refererences to coroutines that deal with timers
     private Coroutine swordExecuteTimer;
@@ -113,9 +115,22 @@ public class PlayerAnimation : MonoBehaviour
         playerAnimator.SetFloat("SwordState", swordState);
     }
 
-    // get current sword state
-    public int GetCurrentSwordState()
+    // get the current attack the player is executing if it is attacking
+    public int GetCurrentAttack()
     {
-        return swordState;
+        playerAnimatorInfo = this.playerAnimator.GetCurrentAnimatorClipInfo(0);
+        currentAnimation = playerAnimatorInfo[0].clip.name;
+
+        switch (currentAnimation)
+        {
+            case "SwordAttackA":
+                return 1;
+            case "SwordAttackB":
+                return 2;
+            case "SwordAttackC":
+                return 3;
+            default:
+                return 0;
+        }
     }
 }

@@ -50,7 +50,7 @@ public class EnemyHealth : MonoBehaviour
         if (collision.gameObject.CompareTag("PlayerSword"))
         {
             // deal 1 hit damage unless player is on 3rd swing
-            if (playerAnimation.GetCurrentSwordState() < 2)
+            if (playerAnimation.GetCurrentAttack() < 3)
             {
                 currentHealth -= 50;
             }
@@ -67,7 +67,6 @@ public class EnemyHealth : MonoBehaviour
 
     IEnumerator CountdownStaggerTimer()
     {
-        Debug.Log("I have been hit and am now staggered");
         enemyStateController.SetCurrentFightState("STAGGERED");
         yield return new WaitForSeconds(0.5f);
         enemyStateController.SetCurrentFightState("ATTACK");
