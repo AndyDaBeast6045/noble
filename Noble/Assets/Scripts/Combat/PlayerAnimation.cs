@@ -11,12 +11,15 @@ public class PlayerAnimation : MonoBehaviour
     // player animation reference
     private Animator playerAnimator;
 
-    private Coroutine timer;
+    // refererences to coroutines that deal with timers
+    private Coroutine swordExecuteTimer;
+    private Coroutine swordAttackCooldown;
 
     // player attack variables
     private int swordState;
     private string[] swingAnimations = { "SwordAttackA", "SwordAttackB", "SwordAttackC" };
     private Queue<string> attackInputBuffer = new Queue<string>();
+    bool canAttack;
 
     // Start is called before the first frame update
     void Start()
@@ -25,13 +28,14 @@ public class PlayerAnimation : MonoBehaviour
         playerAnimator = this.gameObject.GetComponent<Animator>();
         swordState = 0;
         playerAnimator.SetFloat("SwordState", swordState);
+        canAttack = true;
     }
 
     // Update is called once per frame
     void Update()
     {
         // cancel attack animations, and reset them if the player leaves the ground or dashes
-        if (!player.GetIsGrounded() || player.GetIfCanDash())
+        if (player.GetIsMoving())
         {
             playerAnimator.Play("NobleIdle"); // Will be changed to jumping/dashing animation most likely
             while (attackInputBuffer.Count > 0)
@@ -42,7 +46,12 @@ public class PlayerAnimation : MonoBehaviour
         }
 
         // begin an attack animation
-        if (Input.GetKeyDown(KeyCode.C) && attackInputBuffer.Count == 0 && player.GetIsGrounded())
+        if (
+            Input.GetKeyDown(KeyCode.C)
+            && attackInputBuffer.Count == 0
+            && canAttack
+            && !player.GetIsMoving()
+        )
         {
             attackInputBuffer.Enqueue(swingAnimations[swordState]);
             playerAnimator.Play(swingAnimations[swordState]);
@@ -66,23 +75,39 @@ public class PlayerAnimation : MonoBehaviour
         playerAnimator.SetFloat("SwordState", swordState);
     }
 
-    // used by animation events to start a new sword timer
-    private void StartSwordResetTimer()
+    // cool down period after the full attack animation
+    private IEnumerator WaitForAttackCooldown()
     {
-        if (timer != null)
-            StopCoroutine(timer);
-        timer = StartCoroutine(WaitForSwordReset());
+        canAttack = false;
+        yield return new WaitForSeconds(1f);
+        canAttack = true;
     }
 
-    // used by animation events to stop the sword timer
-    private void StopSwordResetTimer()
+    // used by an animation event to start the sword attack cooldown
+    public void StartAttackCooldownTimer()
     {
-        if (timer != null)
-            StopCoroutine(timer);
+        if (swordAttackCooldown != null)
+            StopCoroutine(swordAttackCooldown);
+        StartCoroutine(WaitForAttackCooldown());
+    }
+
+    // used by an animation event to start a new sword timer
+    public void StartSwordResetTimer()
+    {
+        if (swordExecuteTimer != null)
+            StopCoroutine(swordExecuteTimer);
+        swordExecuteTimer = StartCoroutine(WaitForSwordReset());
+    }
+
+    // used by an animation event to stop the sword timer
+    public void StopSwordResetTimer()
+    {
+        if (swordExecuteTimer != null)
+            StopCoroutine(swordExecuteTimer);
     }
 
     // resets the sword state back to 0
-    private void ResetSwordState()
+    public void ResetSwordState()
     {
         swordState = 0;
         playerAnimator.SetFloat("SwordState", swordState);

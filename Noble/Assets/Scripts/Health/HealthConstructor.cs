@@ -5,12 +5,12 @@ using UnityEngine;
 // This class handles the health of the player
 public class HealthConstructor : MonoBehaviour
 {
+    [SerializeField]
     private int _currentMaxHealth;
     private int _currentHealth;
 
     void Start()
     {
-        _currentMaxHealth = 100;
         _currentHealth = _currentMaxHealth;
     }
 
@@ -55,10 +55,7 @@ public class HealthConstructor : MonoBehaviour
 
     public void healUnit(int healAmount)
     {
-        if (_currentHealth > 0 && _currentHealth < _currentMaxHealth)
-        {
-            _currentHealth += healAmount;
-        }
+        _currentHealth += healAmount;
         if (_currentHealth > _currentMaxHealth)
         {
             _currentHealth = _currentMaxHealth;
@@ -67,6 +64,11 @@ public class HealthConstructor : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("EnemySword"))
+        {
+            _currentHealth -= 50;
+            collision.collider.enabled = false;
+        }
         if (collision.gameObject.CompareTag("Projectile"))
         {
             _currentHealth -= 25;

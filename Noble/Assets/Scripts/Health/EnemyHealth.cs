@@ -5,24 +5,25 @@ using UnityEngine;
 // This class keeps track of the health of the enemy
 public class EnemyHealth : MonoBehaviour
 {
-    // game manager reference
-    [SerializeField]
-    private EnemyRespawner respawner;
-
     // health variables
     [SerializeField]
     private float startingHealth;
     private float currentHealth;
 
     // player and enemy references
+    private EnemyRespawner respawner;
     private GameObject enemy;
     private EnemyStateController enemyStateController;
     private GameObject player;
     private PlayerAnimation playerAnimation;
 
+    // coroutine reference
+    private Coroutine staggerTimer;
+
     // Start is called before the first frame update
     void Start()
     {
+        respawner = GameObject.Find("GameController").GetComponent<EnemyRespawner>();
         enemy = this.GetComponent<GameObject>();
         enemyStateController = this.GetComponent<EnemyStateController>();
         player = GameObject.Find("Player");
@@ -58,6 +59,17 @@ public class EnemyHealth : MonoBehaviour
                 currentHealth -= 100;
             }
             collision.collider.enabled = false;
+            if (staggerTimer != null)
+                StopCoroutine(staggerTimer);
+            staggerTimer = StartCoroutine(CountdownStaggerTimer());
         }
+    }
+
+    IEnumerator CountdownStaggerTimer()
+    {
+        Debug.Log("I have been hit and am now staggered");
+        enemyStateController.SetCurrentFightState("STAGGERED");
+        yield return new WaitForSeconds(0.5f);
+        enemyStateController.SetCurrentFightState("ATTACK");
     }
 }

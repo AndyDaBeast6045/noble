@@ -5,7 +5,7 @@ using UnityEngine;
 // this class implements utility functions that pertain to core game mechanics
 public class EnemyRespawner : MonoBehaviour
 {
-    // array of inactive game objects
+    // Queue of inactive game objects
     private Queue<GameObject> enemiesToRespawn;
 
     // start method

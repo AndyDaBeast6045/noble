@@ -6,7 +6,6 @@ using UnityEngine;
 public class FireProjectile : MonoBehaviour
 {
     // player references
-    [SerializeField]
     private GameObject player;
 
     // projectile reference
@@ -38,6 +37,7 @@ public class FireProjectile : MonoBehaviour
     // start function
     void Start()
     {
+        player = GameObject.Find("Player");
         enemyState = this.gameObject.GetComponent<EnemyStateController>();
         enemyAnimator = this.GetComponent<Animator>();
         timer = 5.0f;

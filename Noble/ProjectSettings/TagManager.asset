@@ -13,6 +13,7 @@ TagManager:
   - Floor
   - PlayerSword
   - Background
+  - EnemySword
   layers:
   - Default
   - TransparentFX

@@ -12,7 +12,7 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         sword = this.gameObject.transform.GetChild(0).gameObject;
-        sword.GetComponent<Collider2D>().enabled = false;
+        DisableSwordCollider();
     }
 
     // enable the sword's collider

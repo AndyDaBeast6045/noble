@@ -5,15 +5,23 @@ using UnityEngine;
 // This class handles the movement of an eneymy game object
 public class EnemyMovement : MonoBehaviour
 {
+    // how close can the enemy get to the player before attacking
     [SerializeField]
-    private GameObject player;
-
-    [SerializeField]
-    private Rigidbody2D rb;
+    private float waitThreshold;
 
     // will be stationary if speed is set to 0
     [SerializeField]
     private float speed;
+
+    // true if the enemy has a wait state
+    [SerializeField]
+    private bool hasWaitState;
+
+    // player reference
+    private GameObject player;
+
+    // enemy rigidbody
+    private Rigidbody2D rb;
 
     // playermovement and enemystate script references
     private PlayerMovement playerMovement;
@@ -25,8 +33,10 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        player = GameObject.Find("Player");
+        rb = this.GetComponent<Rigidbody2D>();
         playerMovement = player.gameObject.GetComponent<PlayerMovement>();
-        enemyState = this.gameObject.GetComponent<EnemyStateController>();
+        enemyState = this.GetComponent<EnemyStateController>();
 
         // initialize the direction of the enemy
         enemyState.SetCurrentFightState("PATROL");
@@ -51,7 +61,10 @@ public class EnemyMovement : MonoBehaviour
             rb.velocity = Vector2.right * speed;
         }
         // stop moving towards the player but still execute attack
-        else if (enemyState.GetCurrentFightState().Equals("WAIT"))
+        else if (
+            enemyState.GetCurrentFightState().Equals("WAIT")
+            || enemyState.GetCurrentFightState().Equals("STAGGERED")
+        )
         {
             rb.velocity = Vector2.zero;
             TryRotateEnemy(player.transform.position);
@@ -86,31 +99,40 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // the enemy should attack the player if its within 20f and the player is in sight
-        if (Mathf.Abs(player.transform.position.x - this.transform.position.x) <= 10f)
+        Debug.Log("The state is..." + enemyState.GetCurrentFightState());
+        if (!enemyState.GetCurrentFightState().Equals("STAGGERED"))
         {
-            if (
-                enemyState.GetIfPlayerIsInSight(0, true)
-                && !(Vector3.Distance(this.transform.position, player.transform.position) <= 5f)
-            )
+            // the enemy should attack the player if its within 20f and the player is in sight
+            if (Vector2.Distance(this.transform.position, player.transform.position) <= 10f)
             {
-                enemyState.SetCurrentFightState("ATTACK");
+                if (enemyState.GetIfPlayerIsInSight(0, true))
+                {
+                    if (
+                        (
+                            Vector3.Distance(this.transform.position, player.transform.position)
+                            <= waitThreshold
+                        ) && hasWaitState
+                    )
+                    {
+                        enemyState.SetCurrentFightState("WAIT");
+                    }
+                    else
+                    {
+                        enemyState.SetCurrentFightState("ATTACK");
+                    }
+                }
             }
             else
             {
-                enemyState.SetCurrentFightState("WAIT");
+                enemyState.SetCurrentFightState("PATROl");
             }
-        }
-        else
-        {
-            enemyState.SetCurrentFightState("PATROl");
         }
     }
 
     void OnTriggerEnter2D(Collider2D collider)
     {
         // ignore collisions with Background tat
-        if (collider.gameObject.CompareTag("Background"))
+        if (collider.gameObject.CompareTag("Background") || collider.gameObject.CompareTag("Enemy"))
             Physics2D.IgnoreCollision(this.gameObject.GetComponent<Collider2D>(), collider);
         // disable this gameobject if it runs into a trap
         if (collider.gameObject.CompareTag("Trap"))

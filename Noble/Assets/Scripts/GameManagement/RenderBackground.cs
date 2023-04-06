@@ -6,7 +6,10 @@ using UnityEngine;
 public class RenderBackground : MonoBehaviour
 {
     // image references
-    public GameObject[] backgroundImages;
+    public GameObject[] backgroundImagesAlongXAxis;
+    public GameObject[] backGroundImagesAlongYAxis;
+
+    private GameObject x;
 
     // camera
     private Camera playerCamera;
@@ -22,14 +25,18 @@ public class RenderBackground : MonoBehaviour
         screenBounds = playerCamera.ScreenToWorldPoint(
             new Vector3(Screen.width, Screen.height, playerCamera.transform.position.z)
         );
-        foreach (GameObject obj in backgroundImages)
+        foreach (GameObject obj in backgroundImagesAlongXAxis)
         {
-            LoadObjects(obj);
+            x = new GameObject();
+            x.name = "x";
+            x.transform.SetParent(obj.transform);
+            x.transform.position = obj.transform.position;
+            LoadObjectsAlongXAxis(obj);
         }
     }
 
-    // Load all necessary objects into the scene
-    public void LoadObjects(GameObject obj)
+    // Load all necessary objects into the scene along the x axis
+    public void LoadObjectsAlongXAxis(GameObject obj)
     {
         float objectWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x - choke;
         int numChilds = (int)Mathf.Ceil(screenBounds.x * 2 / objectWidth);
@@ -37,7 +44,8 @@ public class RenderBackground : MonoBehaviour
         for (int i = 0; i <= numChilds; i++)
         {
             GameObject c = Instantiate(clone) as GameObject;
-            c.transform.SetParent(obj.transform);
+            Destroy(c.transform.GetChild(0).gameObject);
+            c.transform.SetParent(obj.transform.GetChild(0));
             c.transform.position = new Vector3(
                 objectWidth * i,
                 obj.transform.position.y,
@@ -50,9 +58,13 @@ public class RenderBackground : MonoBehaviour
     }
 
     // make sure that the objects are located in the right position in the scene
-    public void RepostionObjects(GameObject obj)
+    public void RepostionObjectsAlongXAxis(GameObject obj)
     {
         Transform[] children = obj.GetComponentsInChildren<Transform>();
+        foreach (Transform child in children)
+        {
+            Debug.Log(child.gameObject.name);
+        }
         if (children.Length > 1)
         {
             // leftmost
@@ -92,9 +104,9 @@ public class RenderBackground : MonoBehaviour
     // reposition the objects after every frame
     void LateUpdate()
     {
-        foreach (GameObject obj in backgroundImages)
+        foreach (GameObject obj in backgroundImagesAlongXAxis)
         {
-            RepostionObjects(obj);
+            RepostionObjectsAlongXAxis(obj.transform.GetChild(0).gameObject);
         }
     }
 }

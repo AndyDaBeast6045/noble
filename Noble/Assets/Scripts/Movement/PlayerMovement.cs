@@ -175,6 +175,13 @@ public class PlayerMovement : MonoBehaviour
     // check for collisions
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.gameObject.name.Contains("Enemy"))
+        {
+            Physics2D.IgnoreCollision(
+                this.gameObject.GetComponent<Collider2D>(),
+                collision.collider
+            );
+        }
         if (collision.gameObject.CompareTag("PlayerSword"))
         {
             Physics2D.IgnoreCollision(
@@ -271,5 +278,10 @@ public class PlayerMovement : MonoBehaviour
     {
         transform.position = spawnLocation;
         respawner.ResetEnemies();
+    }
+
+    public bool GetIsMoving()
+    {
+        return !isGrounded || horizontal != 0;
     }
 }

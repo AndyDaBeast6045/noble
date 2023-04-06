@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyStateController : MonoBehaviour
 {
     // player reference
-    [SerializeField]
     private GameObject player;
 
     // make sure the enemy is in sight before firing
@@ -18,7 +17,8 @@ public class EnemyStateController : MonoBehaviour
         ATTACK,
         PATROL,
         WAIT,
-        DEAD
+        DEAD,
+        STAGGERED
     }
 
     // directions the enemy can be facing
@@ -36,6 +36,7 @@ public class EnemyStateController : MonoBehaviour
 
     void Start()
     {
+        player = GameObject.Find("Player");
         rayDirection = new Vector2(1, 0);
     }
 
@@ -46,7 +47,7 @@ public class EnemyStateController : MonoBehaviour
         {
             currentFightState = FightState.ATTACK;
         }
-        else if (state.Equals("PATROl"))
+        else if (state.Equals("PATROL"))
         {
             currentFightState = FightState.PATROL;
         }
@@ -54,9 +55,13 @@ public class EnemyStateController : MonoBehaviour
         {
             currentFightState = FightState.WAIT;
         }
-        else
+        else if (state.Equals("DEAD"))
         {
             currentFightState = FightState.DEAD;
+        }
+        else if (state.Equals("STAGGERED"))
+        {
+            currentFightState = FightState.STAGGERED;
         }
     }
 
