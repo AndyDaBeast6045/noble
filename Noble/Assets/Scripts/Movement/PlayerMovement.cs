@@ -131,8 +131,6 @@ public class PlayerMovement : MonoBehaviour
             isFlipped = false;
         }
 
-        Debug.Log("here is horizontal before if  " + horizontal);
-
         if (toggleNum == 1)
         {
             if (horizontal != -1)
@@ -147,8 +145,6 @@ public class PlayerMovement : MonoBehaviour
                 horizontal = 0;
             }
         }
-        Debug.Log("here is the toggle num" + toggleNum);
-        Debug.Log("here is horizontal after if  " + horizontal);
 
         // get the player speed
         if (canDash)

@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this class handles the colliders of the player's weapon
 public class PlayerAttack : MonoBehaviour
 {
-    // player weapons
+    // player weapon
     private GameObject sword;
-    private GameObject melee; // will implemenmt at a later time
 
     // instantiate player weapon variables
     void Start()

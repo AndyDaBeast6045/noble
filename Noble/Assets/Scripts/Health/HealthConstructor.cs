@@ -62,21 +62,25 @@ public class HealthConstructor : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    // check if the player comes into contact with enemy triggers
+    void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collision.gameObject.CompareTag("EnemySword"))
+        if (collider.gameObject.CompareTag("EnemySword"))
         {
             _currentHealth -= 50;
-            collision.collider.enabled = false;
+            collider.enabled = false;
         }
-        if (collision.gameObject.CompareTag("Projectile"))
+        if (collider.gameObject.CompareTag("Projectile"))
         {
             _currentHealth -= 25;
         }
 
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collider.gameObject.CompareTag("Enemy"))
         {
             _currentHealth -= 10;
         }
     }
+
+    // check if the player collides with an enemy
+    void OnCollisionEnter2D(Collision2D collision) { }
 }

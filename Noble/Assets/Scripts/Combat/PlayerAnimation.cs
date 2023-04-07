@@ -23,6 +23,7 @@ public class PlayerAnimation : MonoBehaviour
     private Queue<string> attackInputBuffer = new Queue<string>();
     private bool canAttack;
     private bool attackedInAir;
+    private bool jumped;
 
     // Start is called before the first frame update
     void Start()
@@ -33,15 +34,17 @@ public class PlayerAnimation : MonoBehaviour
         playerAnimator.SetFloat("SwordState", swordState);
         canAttack = true;
         attackedInAir = false;
+        jumped = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player.GetIsGrounded())
-            attackedInAir = false;
-        // cancel attack animations, and reset them if the player leaves the ground or dashes
-        if (player.GetIsMoving() && player.GetIsGrounded())
+        if (!player.GetIsGrounded())
+            jumped = true; // will be used for the jumping animations
+
+        // cancel attack animations, and reset them based on certain event conditions
+        if ((player.GetIsMoving() && player.GetIsGrounded()) || (jumped && player.GetIsGrounded()))
         {
             playerAnimator.Play("NobleIdle"); // Will be changed to jumping/dashing animation most likely
             while (attackInputBuffer.Count > 0)
@@ -49,6 +52,16 @@ public class PlayerAnimation : MonoBehaviour
             swordState = 0;
             playerAnimator.SetFloat("SwordState", swordState);
             StopSwordResetTimer();
+            if (attackedInAir)
+                attackedInAir = false;
+            if (jumped)
+                jumped = false;
+        }
+
+        // will switch to jump animation after
+        if (!player.GetIsGrounded() && !attackedInAir)
+        {
+            playerAnimator.Play("NobleIdle");
         }
 
         // begin an attack animation
@@ -56,16 +69,21 @@ public class PlayerAnimation : MonoBehaviour
             Input.GetKeyDown(KeyCode.C)
             && attackInputBuffer.Count == 0
             && canAttack
-            && (!player.GetIsMoving() || (!player.GetIsGrounded() && player.GetIsMoving()))
-            && !attackedInAir
+            && !player.GetIsMoving()
+            && player.GetIsGrounded()
         )
         {
             attackInputBuffer.Enqueue(swingAnimations[swordState]);
             playerAnimator.Play(swingAnimations[swordState]);
             swordState++;
             playerAnimator.SetFloat("SwordState", swordState);
-            if (!player.GetIsGrounded())
-                attackedInAir = true;
+        }
+        else if (
+            Input.GetKeyDown(KeyCode.C) && canAttack && !player.GetIsGrounded() && !attackedInAir
+        )
+        {
+            playerAnimator.Play(swingAnimations[0]);
+            attackedInAir = true;
         }
     }
 

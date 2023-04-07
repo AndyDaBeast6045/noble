@@ -61,10 +61,7 @@ public class RenderBackground : MonoBehaviour
     public void RepostionObjectsAlongXAxis(GameObject obj)
     {
         Transform[] children = obj.GetComponentsInChildren<Transform>();
-        foreach (Transform child in children)
-        {
-            Debug.Log(child.gameObject.name);
-        }
+
         if (children.Length > 1)
         {
             // leftmost

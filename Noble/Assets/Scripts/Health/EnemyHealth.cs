@@ -45,9 +45,9 @@ public class EnemyHealth : MonoBehaviour
     }
 
     // check for collisions with the player's weapons
-    public void OnCollisionEnter2D(Collision2D collision)
+    public void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collision.gameObject.CompareTag("PlayerSword"))
+        if (collider.gameObject.CompareTag("PlayerSword"))
         {
             // deal 1 hit damage unless player is on 3rd swing
             if (playerAnimation.GetCurrentAttack() < 3)
@@ -58,13 +58,14 @@ public class EnemyHealth : MonoBehaviour
             {
                 currentHealth -= 100;
             }
-            collision.collider.enabled = false;
+            collider.enabled = false;
             if (staggerTimer != null)
                 StopCoroutine(staggerTimer);
             staggerTimer = StartCoroutine(CountdownStaggerTimer());
         }
     }
 
+    // length of time that the enemy will be staggered for
     IEnumerator CountdownStaggerTimer()
     {
         enemyStateController.SetCurrentFightState("STAGGERED");

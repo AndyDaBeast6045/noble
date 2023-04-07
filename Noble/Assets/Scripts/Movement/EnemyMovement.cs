@@ -99,7 +99,6 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("The state is..." + enemyState.GetCurrentFightState());
         if (!enemyState.GetCurrentFightState().Equals("STAGGERED"))
         {
             // the enemy should attack the player if its within 20f and the player is in sight

@@ -29,6 +29,15 @@ public class ProjectileBehavior : MonoBehaviour
         StartCoroutine(WaitToDestroy());
     }
 
+    // destroy this object if it comes into contact with the player
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.CompareTag("Player"))
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
     // check for collisions with non-enemy game objects
     void OnCollisionEnter2D(Collision2D collision)
     {
