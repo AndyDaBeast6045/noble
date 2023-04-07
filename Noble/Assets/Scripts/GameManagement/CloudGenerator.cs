@@ -32,7 +32,7 @@ public class CloudGenerator : MonoBehaviour
     public void SpawnCloud(Vector3 startPosition)
     {
         // get the height and scale of the cloud
-        float startY = UnityEngine.Random.Range(startPosition.y - 1f, startPosition.y + 5f);
+        float startY = UnityEngine.Random.Range(startPosition.y - 1f, startPosition.y + 3f);
         float scale = UnityEngine.Random.Range(0.8f, 1.2f);
 
         // instantiate the cloud and set its position and scale
