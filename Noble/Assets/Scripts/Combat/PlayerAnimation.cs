@@ -144,7 +144,14 @@ public class PlayerAnimation : MonoBehaviour
     public int GetCurrentAttack()
     {
         playerAnimatorInfo = this.playerAnimator.GetCurrentAnimatorClipInfo(0);
-        currentAnimation = playerAnimatorInfo[0].clip.name;
+        if (playerAnimatorInfo.Length > 0)
+        {
+            currentAnimation = playerAnimatorInfo[0].clip.name;
+        }
+        else
+        {
+            currentAnimation = "";
+        }
 
         switch (currentAnimation)
         {

@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     // game manager reference
-    [SerializeField]
     private EnemyRespawner respawner;
 
     // where the player loads in when the scene starts or when respawning
@@ -50,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
     // start method
     private void Start()
     {
+        respawner = GameObject.Find("GameController").GetComponent<EnemyRespawner>();
         rb = this.GetComponent<Rigidbody2D>();
         dashTime = 0.6f; // should last for approximately 60 frames
         dashTimeDelta = dashTime;
