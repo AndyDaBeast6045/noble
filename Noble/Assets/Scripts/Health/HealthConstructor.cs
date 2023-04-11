@@ -20,7 +20,7 @@ public class HealthConstructor : MonoBehaviour
         if (_currentHealth <= 0)
         {
             Debug.Log("The player has ran out of health .. and the application is quitting");
-            UnityEditor.EditorApplication.isPlaying = false;
+            //UnityEditor.EditorApplication.isPlaying = false;
         }
     }
 

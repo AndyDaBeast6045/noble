@@ -30,6 +30,7 @@ public class PlayerAnimation : MonoBehaviour
     {
         player = this.gameObject.GetComponent<PlayerMovement>();
         playerAnimator = this.gameObject.GetComponent<Animator>();
+        playerAnimator.Play("NobleIdle");
         swordState = 0;
         playerAnimator.SetFloat("SwordState", swordState);
         canAttack = true;
@@ -40,28 +41,27 @@ public class PlayerAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!player.GetIsGrounded())
-            jumped = true; // will be used for the jumping animations
-
-        // cancel attack animations, and reset them based on certain event conditions
-        if ((player.GetIsMoving() && player.GetIsGrounded()) || (jumped && player.GetIsGrounded()))
+        if (player.GetIsGrounded() && attackedInAir)
         {
-            playerAnimator.Play("NobleIdle"); // Will be changed to jumping/dashing animation most likely
-            while (attackInputBuffer.Count > 0)
-                attackInputBuffer.Dequeue();
-            swordState = 0;
-            playerAnimator.SetFloat("SwordState", swordState);
-            StopSwordResetTimer();
-            if (attackedInAir)
-                attackedInAir = false;
-            if (jumped)
-                jumped = false;
+            resetAttackQueue();
         }
-
-        // will switch to jump animation after
-        if (!player.GetIsGrounded() && !attackedInAir)
+        else if (!player.GetIsGrounded() && !attackedInAir)
         {
+            jumped = true; // will be used for the jumping animations
             playerAnimator.Play("NobleIdle");
+        }
+        else
+        {
+            if (player.GetIsMoving() && player.GetIsGrounded())
+            {
+                playerAnimator.Play("NobleRunning");
+                resetAttackQueue();
+                ResetSwordState();
+            }
+            else if (swordState == 0 && !attackedInAir)
+            {
+                playerAnimator.Play("NobleIdle");
+            }
         }
 
         // begin an attack animation
@@ -83,6 +83,7 @@ public class PlayerAnimation : MonoBehaviour
         )
         {
             playerAnimator.Play(swingAnimations[0]);
+            Debug.Log("this shoudl be happenign");
             attackedInAir = true;
         }
     }
@@ -138,6 +139,16 @@ public class PlayerAnimation : MonoBehaviour
     {
         swordState = 0;
         playerAnimator.SetFloat("SwordState", swordState);
+    }
+
+    public void resetAttackQueue()
+    {
+        while (attackInputBuffer.Count > 0)
+            attackInputBuffer.Dequeue();
+        if (attackedInAir)
+            attackedInAir = false;
+        if (jumped)
+            jumped = false;
     }
 
     // get the current attack the player is executing if it is attacking
