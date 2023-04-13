@@ -53,6 +53,7 @@ public class EnemyAttack : MonoBehaviour
         {
             canAttack = false;
             animator.Play("SwordAttackA");
+            Debug.Log("Am i hereee");
             StartCoroutine(CountdownBetweenAttacks());
         }
     }
