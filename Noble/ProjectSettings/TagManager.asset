@@ -7,6 +7,13 @@ TagManager:
   - Platform
   - Trap
   - Enemy
+  - Wall
+  - Projectile
+  - Ground
+  - Floor
+  - PlayerSword
+  - Background
+  - EnemySword
   layers:
   - Default
   - TransparentFX
@@ -43,4 +50,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 789419139
     locked: 0
