@@ -107,7 +107,7 @@ public class PlayerAnimation : MonoBehaviour
             Input.GetKeyDown(KeyCode.C) && canAttack && !player.GetIsGrounded() && !attackedInAir
         )
         {
-            playerAnimator.Play(swingAnimations[0]);
+            playerAnimator.Play("JumpingSwordAttack");
             attackedInAir = true;
         }
     }
