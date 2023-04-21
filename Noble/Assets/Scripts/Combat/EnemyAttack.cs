@@ -42,7 +42,7 @@ public class EnemyAttack : MonoBehaviour
         // switch to an idle animation when the enemy is staggered
         if (enemyState.GetCurrentFightState().Equals("STAGGERED"))
         {
-            animator.Play("NobleIdle");
+            animator.Play("EnemyIdle");
         }
         // perform an attack if the enemy is able to
         if (
@@ -52,7 +52,7 @@ public class EnemyAttack : MonoBehaviour
         )
         {
             canAttack = false;
-            animator.Play("SwordAttackA");
+            animator.Play("EnemyAttack");
             Debug.Log("Am i hereee");
             StartCoroutine(CountdownBetweenAttacks());
         }
