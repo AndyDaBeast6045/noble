@@ -11,6 +11,7 @@ public class EnemyHealth : MonoBehaviour
     private float currentHealth;
 
     // player and enemy references
+    private SurvivalController survivalController;
     private EnemyRespawner respawner;
     private GameObject enemy;
     private EnemyStateController enemyStateController;
@@ -23,6 +24,7 @@ public class EnemyHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        survivalController = GameObject.Find("GameController").GetComponent<SurvivalController>();
         respawner = GameObject.Find("GameController").GetComponent<EnemyRespawner>();
         enemy = this.GetComponent<GameObject>();
         enemyStateController = this.GetComponent<EnemyStateController>();
@@ -37,6 +39,7 @@ public class EnemyHealth : MonoBehaviour
         // if the enemy runs out of health, disable its gameobject
         if (currentHealth <= 0)
         {
+            survivalController.IncrementPoints(this.gameObject);
             respawner.AddSlainEnemy(this.gameObject);
             currentHealth = 100;
             enemyStateController.SetCurrentFightState("DEAD");

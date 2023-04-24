@@ -9,6 +9,10 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField]
     private float waitThreshold;
 
+    // how close will the enemy  need to be to the player to start attacking them
+    [SerializeField]
+    private float attackThreshold;
+
     // will be stationary if speed is set to 0
     [SerializeField]
     private float speed;
@@ -102,7 +106,10 @@ public class EnemyMovement : MonoBehaviour
         if (!enemyState.GetCurrentFightState().Equals("STAGGERED"))
         {
             // the enemy should attack the player if its within 20f and the player is in sight
-            if (Vector2.Distance(this.transform.position, player.transform.position) <= 10f)
+            if (
+                Vector2.Distance(this.transform.position, player.transform.position)
+                <= attackThreshold
+            )
             {
                 if (enemyState.GetIfPlayerIsInSight(0, true))
                 {
@@ -128,6 +135,20 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    // execute certain conditions when in contact with colliders
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        Debug.Log("is this happening");
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Physics2D.IgnoreCollision(
+                this.gameObject.GetComponent<Collider2D>(),
+                collision.collider
+            );
+        }
+    }
+
+    // execute certain conditions when in contact with triggers
     void OnTriggerEnter2D(Collider2D collider)
     {
         // ignore collisions with Background tat
