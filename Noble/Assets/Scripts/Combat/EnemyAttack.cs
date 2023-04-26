@@ -39,6 +39,7 @@ public class EnemyAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(enemyState.GetIfPlayerIsInSight(0, false));
         // switch to an idle animation when the enemy is staggered
         if (enemyState.GetCurrentFightState().Equals("STAGGERED"))
         {

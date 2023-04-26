@@ -11,13 +11,23 @@ public class EnemyRespawner : MonoBehaviour
     // start method
     void Start()
     {
-        enemiesToRespawn = new Queue<GameObject>();
+        enemiesToRespawn = new Queue<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
+        DisableEnemies();
     }
 
     // adds slain enemy to reset array
     public void AddSlainEnemy(GameObject enemy)
     {
         enemiesToRespawn.Enqueue(enemy);
+    }
+
+    // disables each enemy in the queue
+    public void DisableEnemies()
+    {
+        foreach (GameObject obj in enemiesToRespawn)
+        {
+            obj.SetActive(false);
+        }
     }
 
     // respawn slain enemies

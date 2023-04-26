@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SurvivalController : MonoBehaviour
 {
@@ -9,27 +10,85 @@ public class SurvivalController : MonoBehaviour
     private GameObject[] enemyVarients;
 
     [SerializeField]
+    private GameObject player;
+
+    [SerializeField]
+    private GameObject rightBoundary;
+
+    [SerializeField]
+    private Canvas menu;
+
+    [SerializeField]
+    private Vector3 playerSpawnPos;
+
+    [SerializeField]
     private Transform leftSpawn;
 
     [SerializeField]
     private Transform rightSpawn;
 
-    // field to determine if this script is needed
-    [SerializeField]
-    private bool isSurvivalOn;
-
-    // player points
-    private int playerPoints;
-
     // spawn time
     [SerializeField]
     private float spawnTimer;
 
-    // Start is called before the first frame update
+    private EnemyRespawner respawner;
+
+    // sountrack
+    private AudioSource soundtrack;
+
+    // player points
+    private int playerPoints;
+
+    // is survival on
+    private bool isSurvivalOn;
+
+    // check if the game has started
+    private bool hasStarted;
+
+    // start method
     void Start()
     {
+        respawner = this.GetComponent<EnemyRespawner>();
+        soundtrack = this.GetComponent<AudioSource>();
+        isSurvivalOn = false;
+        hasStarted = false;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.S) && !hasStarted)
+        {
+            isSurvivalOn = true;
+            StartGame();
+        }
+        else if (Input.GetKeyDown(KeyCode.L) && !hasStarted)
+        {
+            StartGame();
+        }
+    }
+
+    // start game here
+    private void StartGame()
+    {
+        menu.gameObject.SetActive(false);
+        soundtrack.Play();
+        player.SetActive(true);
         if (isSurvivalOn)
+        {
             StartCoroutine(DoSpawnScheduling());
+        }
+        else
+        {
+            SetupLevel();
+        }
+        hasStarted = true;
+    }
+
+    // setup level
+    public void SetupLevel()
+    {
+        respawner.ResetEnemies();
+        rightBoundary.transform.position = new Vector3(250, 0, 0);
     }
 
     // scheduler
@@ -39,6 +98,7 @@ public class SurvivalController : MonoBehaviour
         {
             SpawnEnemy();
             yield return new WaitForSeconds(spawnTimer);
+
             // check score and modify the timer here
         } while (true);
     }
@@ -49,10 +109,9 @@ public class SurvivalController : MonoBehaviour
         int enemytoSpawn = Random.Range(0, enemyVarients.Length);
         int xPos = Random.Range(0, 2);
         // get actual x coordinate to spawn in at
-        enemyVarients[enemytoSpawn].SetActive(true);
         if (xPos == 0)
         {
-            Instantiate(enemyVarients[enemytoSpawn], leftSpawn.position, Quaternion.identity);
+            Instantiate(enemyVarients[enemytoSpawn], rightSpawn.position, Quaternion.identity);
         }
         else
         {

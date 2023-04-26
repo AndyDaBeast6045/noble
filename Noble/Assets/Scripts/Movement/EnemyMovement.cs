@@ -135,11 +135,21 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Enemy"))
+        {
+            Physics2D.IgnoreCollision(
+                this.gameObject.GetComponent<Collider2D>(),
+                collision.collider
+            );
+        }
+    }
+
     // execute certain conditions when in contact with colliders
     void OnCollisionStay2D(Collision2D collision)
     {
-        Debug.Log("is this happening");
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Enemy"))
         {
             Physics2D.IgnoreCollision(
                 this.gameObject.GetComponent<Collider2D>(),
