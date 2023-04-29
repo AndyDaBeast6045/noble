@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SurvivalController : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class SurvivalController : MonoBehaviour
     private GameObject rightBoundary;
 
     [SerializeField]
-    private Canvas menu;
+    private GameObject menu;
 
     [SerializeField]
     private Vector3 playerSpawnPos;
@@ -31,7 +32,13 @@ public class SurvivalController : MonoBehaviour
     [SerializeField]
     private float spawnTimer;
 
+    private TextMeshProUGUI[] tmps;
+
     private EnemyRespawner respawner;
+
+    private HealthConstructor playerHealth;
+
+    private List<GameObject> survivalEnemies;
 
     // sountrack
     private AudioSource soundtrack;
@@ -39,11 +46,30 @@ public class SurvivalController : MonoBehaviour
     // player points
     private int playerPoints;
 
+    // player timer
+    private float timer;
+
     // is survival on
-    private bool isSurvivalOn;
+    public bool isSurvivalOn;
 
     // check if the game has started
     private bool hasStarted;
+
+    // player sprite renderer
+    private SpriteRenderer playerRenderer;
+
+    // playermovement reference
+    private PlayerMovement playerMovement;
+
+    Coroutine spawner;
+
+    private string gameLog;
+
+    int minutes;
+    int seconds;
+    int enemiesKilled;
+
+    Vector3 rightBoundarySPos;
 
     // start method
     void Start()
@@ -52,6 +78,17 @@ public class SurvivalController : MonoBehaviour
         soundtrack = this.GetComponent<AudioSource>();
         isSurvivalOn = false;
         hasStarted = false;
+        timer = 0;
+        tmps = menu.transform.GetComponentsInChildren<TextMeshProUGUI>();
+        playerHealth = player.GetComponent<HealthConstructor>();
+        playerSpawnPos = player.transform.position;
+
+        playerRenderer = player.GetComponent<SpriteRenderer>();
+        playerMovement = player.GetComponent<PlayerMovement>();
+        togglePlayer();
+        enemiesKilled = 0;
+        rightBoundarySPos = rightBoundary.transform.position;
+        survivalEnemies = new List<GameObject>();
     }
 
     void Update()
@@ -65,17 +102,36 @@ public class SurvivalController : MonoBehaviour
         {
             StartGame();
         }
+
+        if (hasStarted)
+        {
+            timer += Time.deltaTime;
+            timer = Mathf.Round(timer * 100.0f) * 0.01f;
+            UpdateGame();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Application.Quit();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetGame(-1);
+        }
     }
 
     // start game here
     private void StartGame()
     {
-        menu.gameObject.SetActive(false);
+        tmps[0].gameObject.SetActive(false);
+        tmps[1].gameObject.SetActive(false);
+        tmps[2].text = "Health: 100	Score: 0";
         soundtrack.Play();
-        player.SetActive(true);
+        togglePlayer();
         if (isSurvivalOn)
         {
-            StartCoroutine(DoSpawnScheduling());
+            spawner = StartCoroutine(DoSpawnScheduling());
         }
         else
         {
@@ -88,7 +144,7 @@ public class SurvivalController : MonoBehaviour
     public void SetupLevel()
     {
         respawner.ResetEnemies();
-        rightBoundary.transform.position = new Vector3(250, 0, 0);
+        rightBoundary.transform.position = new Vector3(240, 1, 0);
     }
 
     // scheduler
@@ -109,20 +165,47 @@ public class SurvivalController : MonoBehaviour
         int enemytoSpawn = Random.Range(0, enemyVarients.Length);
         int xPos = Random.Range(0, 2);
         // get actual x coordinate to spawn in at
+        GameObject obj;
         if (xPos == 0)
         {
-            Instantiate(enemyVarients[enemytoSpawn], rightSpawn.position, Quaternion.identity);
+            obj = Instantiate(enemyVarients[enemytoSpawn], leftSpawn.position, Quaternion.identity);
         }
         else
         {
-            Instantiate(enemyVarients[enemytoSpawn], rightSpawn.position, Quaternion.identity);
+            obj = Instantiate(
+                enemyVarients[enemytoSpawn],
+                rightSpawn.position,
+                Quaternion.identity
+            );
+        }
+        survivalEnemies.Add(obj);
+    }
+
+    // update the game logic
+    public void UpdateGame()
+    {
+        if (isSurvivalOn)
+        {
+            tmps[2].text = "Health: " + playerHealth.Health + "\tScore: " + playerPoints;
+            if (enemiesKilled % 5 == 0 && spawnTimer > 0)
+            {
+                spawnTimer -= 1;
+                enemiesKilled += 1;
+            }
+        }
+        else
+        {
+            minutes = (int)(timer / 0.60f);
+            seconds = Mathf.RoundToInt((timer % .60f * 10.0f) * 10);
+
+            tmps[2].text = "Health: " + playerHealth.Health + "\tScore: " + minutes + ":" + seconds;
         }
     }
 
     // update points here
     public void IncrementPoints(GameObject slainEnemy)
     {
-        if (slainEnemy.name.Equals("SlimeEnemy"))
+        if (slainEnemy.name.Contains("SlimeEnemy"))
         {
             playerPoints += 2;
         }
@@ -130,5 +213,62 @@ public class SurvivalController : MonoBehaviour
         {
             playerPoints += 3;
         }
+        enemiesKilled += 1;
+    }
+
+    public void ResetGame(int condition)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        switch (condition)
+        {
+            case 0:
+                WinGame();
+                break;
+            case 1:
+                if (isSurvivalOn)
+                    WinGame();
+                break;
+        }
+
+        soundtrack.Stop();
+        if (isSurvivalOn)
+        {
+            foreach (GameObject obj in survivalEnemies)
+            {
+                Destroy(obj);
+            }
+            survivalEnemies.Clear();
+            StopCoroutine(spawner);
+        }
+
+        playerHealth.Health = 100;
+        player.transform.position = playerSpawnPos;
+        timer = 0;
+        playerPoints = 0;
+        tmps[0].gameObject.SetActive(true);
+        tmps[1].gameObject.SetActive(true);
+        tmps[2].text = "";
+        isSurvivalOn = false;
+        hasStarted = false;
+        respawner.DisableEnemies();
+        rightBoundary.transform.position = rightBoundarySPos;
+        togglePlayer();
+    }
+
+    void togglePlayer()
+    {
+        playerRenderer.enabled = !playerRenderer.enabled;
+        playerMovement.enabled = !playerMovement.enabled;
+    }
+
+    public void WinGame()
+    {
+        string score = playerPoints.ToString();
+        if (isSurvivalOn)
+        {
+            score = minutes + ":" + seconds;
+        }
+
+        gameLog += (isSurvivalOn ? "Survival" : "Level") + "\t Score: " + score + "\n";
     }
 }

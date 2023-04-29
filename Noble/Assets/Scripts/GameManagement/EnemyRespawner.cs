@@ -6,19 +6,19 @@ using UnityEngine;
 public class EnemyRespawner : MonoBehaviour
 {
     // Queue of inactive game objects
-    private Queue<GameObject> enemiesToRespawn;
+    private List<GameObject> enemiesToRespawn;
+    private List<Vector3> spawnLocations;
 
     // start method
     void Start()
     {
-        enemiesToRespawn = new Queue<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
+        enemiesToRespawn = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
+        spawnLocations = new List<Vector3>();
+        foreach (GameObject obj in enemiesToRespawn)
+        {
+            spawnLocations.Add(obj.transform.position);
+        }
         DisableEnemies();
-    }
-
-    // adds slain enemy to reset array
-    public void AddSlainEnemy(GameObject enemy)
-    {
-        enemiesToRespawn.Enqueue(enemy);
     }
 
     // disables each enemy in the queue
@@ -33,10 +33,13 @@ public class EnemyRespawner : MonoBehaviour
     // respawn slain enemies
     public void ResetEnemies()
     {
-        while (enemiesToRespawn.Count > 0)
+        for (int i = 0; i < enemiesToRespawn.Count; i++)
         {
-            GameObject tempEnemy = enemiesToRespawn.Dequeue();
-            tempEnemy.SetActive(true);
+            GameObject enemy = enemiesToRespawn[i];
+            enemy.SetActive(true);
+            enemy.transform.position = spawnLocations[i];
+            EnemyStateController enemyState = enemy.GetComponent<EnemyStateController>();
+            enemyState.SetCurrentFightState("PATROL");
         }
     }
 }

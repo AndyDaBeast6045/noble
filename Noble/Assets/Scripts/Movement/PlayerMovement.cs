@@ -5,6 +5,9 @@ using UnityEngine;
 // This class handles the input and physics related to the movement of the player
 public class PlayerMovement : MonoBehaviour
 {
+    // game controller reference
+    private SurvivalController controller;
+
     // game manager reference
     private EnemyRespawner respawner;
 
@@ -49,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
     // start method
     private void Start()
     {
+        controller = GameObject.Find("GameController").GetComponent<SurvivalController>();
         respawner = GameObject.Find("GameController").GetComponent<EnemyRespawner>();
         rb = this.GetComponent<Rigidbody2D>();
         dashTime = 0.6f; // should last for approximately 60 frames
@@ -211,6 +215,11 @@ public class PlayerMovement : MonoBehaviour
             toggleNum = 3;
             isGrounded = true;
         }
+
+        if (collision.gameObject.name.Equals("RightBoundary") && !controller.isSurvivalOn)
+        {
+            controller.ResetGame(0);
+        }
     }
 
     // check for continous collisions
@@ -280,11 +289,7 @@ public class PlayerMovement : MonoBehaviour
         return isOnPlatform;
     }
 
-    public void RestartGameForTesting()
-    {
-        transform.position = spawnLocation;
-        respawner.ResetEnemies();
-    }
+    public void RestartGameForTesting() { }
 
     public bool GetIsMoving()
     {

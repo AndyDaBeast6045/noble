@@ -6,6 +6,9 @@ using UnityEngine;
 public class HealthConstructor : MonoBehaviour
 {
     [SerializeField]
+    private SurvivalController controller;
+
+    [SerializeField]
     private int _currentMaxHealth;
     private int _currentHealth;
 
@@ -20,7 +23,8 @@ public class HealthConstructor : MonoBehaviour
         if (_currentHealth <= 0)
         {
             Debug.Log("The player has ran out of health .. and the application is quitting");
-            //UnityEditor.EditorApplication.isPlaying = false;
+            _currentHealth = _currentMaxHealth;
+            controller.ResetGame(0);
         }
     }
 
@@ -74,13 +78,14 @@ public class HealthConstructor : MonoBehaviour
         {
             _currentHealth -= 25;
         }
+    }
 
-        if (collider.gameObject.CompareTag("Enemy"))
+    // check if the player collides with an enemy
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             _currentHealth -= 10;
         }
     }
-
-    // check if the player collides with an enemy
-    void OnCollisionEnter2D(Collision2D collision) { }
 }

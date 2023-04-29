@@ -40,9 +40,8 @@ public class EnemyHealth : MonoBehaviour
         if (currentHealth <= 0)
         {
             survivalController.IncrementPoints(this.gameObject);
-            respawner.AddSlainEnemy(this.gameObject);
-            currentHealth = 100;
-            enemyStateController.SetCurrentFightState("DEAD");
+            currentHealth = startingHealth;
+            // enemyStateController.SetCurrentFightState("DEAD");
             this.gameObject.SetActive(false);
         }
     }

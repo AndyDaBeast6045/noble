@@ -19,9 +19,7 @@ public class DisableOnCollision : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Platform") || collider.gameObject.CompareTag("Wall"))
         {
-            // special case, keep the sprite renderer enabled, boundaries are invisible
-            if (!collider.gameObject.name.Contains("Boundary"))
-                this.GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 
@@ -30,9 +28,7 @@ public class DisableOnCollision : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Platform") || collider.gameObject.CompareTag("Wall"))
         {
-            // special case, keep the sprite renderer enabled, boundaries are invisible
-            if (!collider.gameObject.name.Contains("Boundary"))
-                this.GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 

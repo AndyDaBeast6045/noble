@@ -34,6 +34,9 @@ public class EnemyMovement : MonoBehaviour
     // stores where the enemy spawns in at
     private Vector3 enemySpawnLocation;
 
+    // animator reference
+    private Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +44,7 @@ public class EnemyMovement : MonoBehaviour
         rb = this.GetComponent<Rigidbody2D>();
         playerMovement = player.gameObject.GetComponent<PlayerMovement>();
         enemyState = this.GetComponent<EnemyStateController>();
+        animator = this.GetComponent<Animator>();
 
         // initialize the direction of the enemy
         enemyState.SetCurrentFightState("PATROL");
@@ -91,7 +95,7 @@ public class EnemyMovement : MonoBehaviour
                 TryRotateEnemy(enemySpawnLocation);
             }
             // modify speed
-            rb.velocity = Vector2.right * speed;
+            rb.velocity = Vector2.zero;
         }
         else // the enemy just respawned after being in a dead state
         {
