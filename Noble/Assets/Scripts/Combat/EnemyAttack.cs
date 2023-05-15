@@ -21,9 +21,8 @@ public class EnemyAttack : MonoBehaviour
     // animator reference
     private Animator animator;
 
-    // state if the enemy can attack
+    // attack states
     private bool canAttack;
-
     private bool doingAttack;
 
     // Start is called before the first frame update
@@ -34,7 +33,6 @@ public class EnemyAttack : MonoBehaviour
         rb = this.GetComponent<Rigidbody2D>();
         enemyState = this.GetComponent<EnemyStateController>();
         animator = this.GetComponent<Animator>();
-
         Init();
     }
 
@@ -70,7 +68,6 @@ public class EnemyAttack : MonoBehaviour
                 || (enemyState.GetCurrentFightState().Equals("WAIT") && !doingAttack)
             )
             {
-                Debug.Log("is this happeninggg" + canAttack);
                 animator.Play("EnemyIdle");
             }
         }
@@ -95,39 +92,11 @@ public class EnemyAttack : MonoBehaviour
         sword.GetComponent<Collider2D>().enabled = false;
     }
 
-    void SetCanAttack()
-    {
-        Debug.Log("hereee");
-        doingAttack = false;
-        canAttack = false;
-        StartCoroutine(CountdownBetweenAttacks());
-    }
-
+    // initialze the state of the enemy
     public void Init()
     {
         canAttack = true;
         doingAttack = false;
         DisableSwordCollider();
-    }
-
-    // Temporary methods that will be removed once there is an actual enemy using this script
-    // ______________________________________________________________________________________
-
-    void RemoveAttackFromInputBuffer()
-    {
-        // do nothing
-    }
-
-    void StartSwordResetTimer()
-    {
-        // do nothing
-    }
-
-    public void SetCurrentAnimation()
-    {
-        Debug.Log("is this being called");
-        this.animator.Play("NobleIdle");
-        // canAttack = false;
-        StartCoroutine(CountdownBetweenAttacks());
     }
 }

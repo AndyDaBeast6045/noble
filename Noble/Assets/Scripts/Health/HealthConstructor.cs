@@ -19,7 +19,6 @@ public class HealthConstructor : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Here is the current health of the player: " + _currentHealth);
         if (_currentHealth <= 0)
         {
             Debug.Log("The player has ran out of health .. and the application is quitting");

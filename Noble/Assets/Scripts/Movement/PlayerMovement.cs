@@ -5,12 +5,6 @@ using UnityEngine;
 // This class handles the input and physics related to the movement of the player
 public class PlayerMovement : MonoBehaviour
 {
-    // game controller reference
-    private SurvivalController controller;
-
-    // game manager reference
-    private EnemyRespawner respawner;
-
     // where the player loads in when the scene starts or when respawning
     [SerializeField]
     private Vector2 spawnLocation;
@@ -36,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
     private bool isFlipped;
 
     // vars that are initialized in start
+    private SurvivalController controller;
+    private EnemyRespawner respawner;
     private Rigidbody2D rb;
     private int jumpCounter;
     private float dashTime;
@@ -70,9 +66,6 @@ public class PlayerMovement : MonoBehaviour
     // update function
     private void Update()
     {
-        // only here for testing purposes
-        if (Input.GetKeyDown(KeyCode.R))
-            RestartGameForTesting();
         // check if the player has fallen up the map
         if (this.transform.position.y < -1)
         {
@@ -284,15 +277,21 @@ public class PlayerMovement : MonoBehaviour
         return canDash;
     }
 
+    // return true if the player is currently on a platform, else return false
     public bool GetIsOnPlatform()
     {
         return isOnPlatform;
     }
 
-    public void RestartGameForTesting() { }
+    // return true if the player is dashing, else return false
+    public bool IsDashing()
+    {
+        return speed.x == (playerSpeed * 2);
+    }
 
+    // return true if the player is moving, else return false
     public bool GetIsMoving()
     {
-        return horizontal != 0;
+        return Mathf.Abs(rb.velocity.x) >= 0.1;
     }
 }

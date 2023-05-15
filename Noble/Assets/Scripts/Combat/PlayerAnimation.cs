@@ -27,6 +27,7 @@ public class PlayerAnimation : MonoBehaviour
     private bool canAttack;
     private bool attackedInAir;
     private bool jumped;
+    private bool isWaiting;
 
     // Start is called before the first frame update
     void Start()
@@ -40,64 +41,23 @@ public class PlayerAnimation : MonoBehaviour
         canAttack = true;
         attackedInAir = false;
         jumped = false;
+        isWaiting = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // reset the attack queue if the player jumped and attacked
-        if (player.GetIsGrounded() && attackedInAir)
-        {
-            resetAttackQueue();
-        }
-        else if (!player.GetIsGrounded() && !attackedInAir)
-        {
-            // execute jumping animations depending on rb velocity
-            jumped = true; // will be used for the jumping animations
-
-            if (rb.velocity.y > 0)
-            {
-                playerAnimator.Play("Jump");
-            }
-            else
-            {
-                //playerAnimator.Play("JumpDownward");
-                // sprite needs to be fixed before it is used
-            }
-        }
-        else
-        {
-            if (player.GetIsMoving() && player.GetIsGrounded())
-            {
-                // play dash or run animation
-                if (player.GetIfCanDash())
-                {
-                    playerAnimator.Play("NobleDash");
-                }
-                else
-                {
-                    playerAnimator.Play("NobleRunning");
-                }
-
-                // reset attack queue and reset the sword state
-                resetAttackQueue();
-                ResetSwordState();
-            }
-            else if (swordState == 0 && !attackedInAir)
-            {
-                playerAnimator.Play("NobleIdle");
-            }
-        }
-
-        // begin an attack animation
+        // do attack if able
         if (
             Input.GetKeyDown(KeyCode.C)
             && attackInputBuffer.Count == 0
             && canAttack
-            && !player.GetIsMoving()
             && player.GetIsGrounded()
+            && !player.IsDashing()
         )
         {
+            if (swordState > 2)
+                swordState = 0;
             attackInputBuffer.Enqueue(swingAnimations[swordState]);
             playerAnimator.Play(swingAnimations[swordState]);
             swordState++;
@@ -110,20 +70,74 @@ public class PlayerAnimation : MonoBehaviour
             playerAnimator.Play("JumpingSwordAttack");
             attackedInAir = true;
         }
+        // reset the attack queue if the player jumped and attacked
+        if (player.GetIsGrounded() && attackedInAir)
+        {
+            ResetSwordState();
+
+            resetAttackQueue();
+        }
+        else if (!player.GetIsGrounded() && !attackedInAir)
+        {
+            // execute jumping animations depending on rb velocity
+            jumped = true; // will be used for the jumping animations
+
+            if (rb.velocity.y > 0)
+            {
+                playerAnimator.Play("Jump");
+                ResetSwordState();
+                resetAttackQueue();
+            }
+            else
+            {
+                //playerAnimator.Play("JumpDownward");
+                // sprite needs to be fixed before it is used
+            }
+        }
+        else
+        {
+            if (
+                player.GetIsMoving()
+                && player.GetIsGrounded()
+                && GetCurrentAttack() == 0
+                && attackInputBuffer.Count == 0
+            )
+            {
+                // play dash or run animation
+                if (player.GetIfCanDash())
+                {
+                    playerAnimator.Play("NobleDash");
+                    resetAttackQueue();
+                    ResetSwordState();
+                }
+                else
+                {
+                    playerAnimator.Play("NobleRunning");
+                }
+            }
+            else if (swordState == 0 && !attackedInAir)
+            {
+                // play the idle animation
+                playerAnimator.Play("NobleIdle");
+            }
+        }
     }
 
     // used by attack animation events to remove themselves from the input buffer
     private void RemoveAttackFromInputBuffer()
     {
-        if (attackInputBuffer.Count > 0)
-            attackInputBuffer.Dequeue();
+        Debug.Log(" The animations are calling this prooperly");
+        resetAttackQueue();
     }
 
     // time window started to execute another sword attack or the sequence restarts
     private IEnumerator WaitForSwordReset()
     {
+        isWaiting = true;
         yield return new WaitForSeconds(0.75f);
+        isWaiting = false;
         swordState = 0;
+        resetAttackQueue();
         playerAnimator.SetFloat("SwordState", swordState);
     }
 

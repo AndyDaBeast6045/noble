@@ -64,7 +64,6 @@ public class FireProjectile : MonoBehaviour
                     < minDistanceToFire
             )
             {
-                Debug.Log("we are here per usual");
                 enemyAnimator.Play("SlimeAttack");
                 timerDelta = timer;
             }
@@ -74,7 +73,6 @@ public class FireProjectile : MonoBehaviour
     // do the projectile attack and animation
     public void DoProjectileAttack()
     {
-        Debug.Log("is this being called?");
         Instantiate(projectile, projectileFireTransform.position, Quaternion.identity);
     }
 }

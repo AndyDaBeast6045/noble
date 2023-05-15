@@ -884,7 +884,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: StopSwordResetTimer
+    functionName: StartAttackCooldownTimer
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -898,7 +898,14 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0
-    functionName: StartAttackCooldownTimer
+    functionName: StopSwordResetTimer
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.33333334
+    functionName: DisableSwordCollider
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -913,13 +920,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0.33333334
     functionName: RemoveAttackFromInputBuffer
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.33333334
-    functionName: DisableSwordCollider
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

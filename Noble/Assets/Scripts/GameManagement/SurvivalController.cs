@@ -32,44 +32,24 @@ public class SurvivalController : MonoBehaviour
     [SerializeField]
     private float spawnTimer;
 
-    private TextMeshProUGUI[] tmps;
-
-    private EnemyRespawner respawner;
-
-    private HealthConstructor playerHealth;
-
+    // vars
     private List<GameObject> survivalEnemies;
-
-    // sountrack
-    private AudioSource soundtrack;
-
-    // player points
-    private int playerPoints;
-
-    // player timer
-    private float timer;
-
-    // is survival on
-    public bool isSurvivalOn;
-
-    // check if the game has started
-    private bool hasStarted;
-
-    // player sprite renderer
+    private TextMeshProUGUI[] tmps;
+    private EnemyRespawner respawner;
+    private HealthConstructor playerHealth;
     private SpriteRenderer playerRenderer;
-
-    // playermovement reference
     private PlayerMovement playerMovement;
-
-    Coroutine spawner;
-
+    private Coroutine spawner;
+    private AudioSource soundtrack;
+    private Vector3 rightBoundarySPos;
+    private float timer;
+    public bool isSurvivalOn;
+    private bool hasStarted;
     private string gameLog;
-
-    int minutes;
-    int seconds;
-    int enemiesKilled;
-
-    Vector3 rightBoundarySPos;
+    private int playerPoints;
+    private int minutes;
+    private int seconds;
+    private int enemiesKilled;
 
     // start method
     void Start()
@@ -91,6 +71,7 @@ public class SurvivalController : MonoBehaviour
         survivalEnemies = new List<GameObject>();
     }
 
+    // update method
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.S) && !hasStarted)
@@ -216,6 +197,7 @@ public class SurvivalController : MonoBehaviour
         enemiesKilled += 1;
     }
 
+    // reset the game
     public void ResetGame(int condition)
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -255,12 +237,14 @@ public class SurvivalController : MonoBehaviour
         togglePlayer();
     }
 
+    // toggle if the player is active
     void togglePlayer()
     {
         playerRenderer.enabled = !playerRenderer.enabled;
         playerMovement.enabled = !playerMovement.enabled;
     }
 
+    // win the game
     public void WinGame()
     {
         string score = playerPoints.ToString();
